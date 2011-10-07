@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <link href="<%= @prefix %>/bootstrap.css" rel="stylesheet">
+        <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
+        <script src="http://autobahn.tablesorter.com/jquery.tablesorter.min.js"></script>
+        <script src="<%= @prefix %>/js/bootstrap-twipsy.js"></script>
+        <script src="<%= @prefix %>/js/bootstrap-scrollspy.js"></script>
+        <script src="<%= @prefix %>/js/bootstrap-dropdown.js"></script>
+        <script src="<%= @prefix %>/js/bootstrap-popover.js"></script>
+        <meta http-equiv="refresh" content="60">
+    </head>
+    <body style="padding-top: 80px;">
+        <div class="topbar-wrapper" style="z-index: 5;">
+            <div class="topbar" data-dropdown="dropdown" >
+                <div class="topbar-inner">
+                    <div class="container">
+                        <h3><a href="<%= @prefix %>/"><%= @dash_title %></a></h3>
+                        <ul class="nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle">Dashboards</a>
+                                <% @dash_site.dashboards.sort_by{|b| b[:name]}.each do |board| %>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<%= @prefix %>/dashboard/<%= board[:link] %>"><%= board[:name] %></a></li>
+                                </ul>
+                                <% end %>
+                            </li>
+                        </ul>
+                        <ul class="nav secondary-nav">
+                            <li><a href="<%= @graphite_base %>">Data Browser</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <% if @error %>
+                <div class="alert-message error">
+                    <%= @error %>
+                </div>
+                <% end %>
+                <%= yield %>
+        </div>
+        <div class="container">
+            <h6>Updated <%= Time.now %></h6>
+        </div>
+    </body>
+</html>

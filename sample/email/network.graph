@@ -1,0 +1,11 @@
+title   "Combined Network Usage"
+vtitle  "bps"
+area    :first
+
+field :up, :color => "green",
+               :alias => "Up",
+               :data  => "sumSeries(nonNegativeDerivative(mw*.munin.if_*.up))"
+
+field :down, :color => "blue",
+               :alias => "Down",
+               :data  => "sumSeries(nonNegativeDerivative(mw*.munin.if_*.down))"

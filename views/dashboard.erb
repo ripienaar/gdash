@@ -1,0 +1,46 @@
+<% unless @error %>
+<h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+<div class="row">
+    <table>
+    <% row = 1 %>
+    <% @dashboard.graphs.in_groups_of(@graph_columns) do |graphs| %>
+
+        <tr>
+        <% graphs.each do |graph| %>
+            <td>
+            <% if graph %>
+                <% if graph[:graphite][:description] %>
+                    <img src='<%= [@dash_site.grahite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>">
+                <% else %>
+                    <img src='<%= [@dash_site.grahite_render, graph[:graphite][:url]].join "?" %>'>
+                <% end %>
+            <% end %>
+            </td>
+        <% end %>
+        </tr>
+    <% row += 1 %>
+    <% end %>
+    </table>
+</div>
+<script>
+    $(function () {
+      $("img[rel=popover-above]")
+        .popover({
+          placement: "above", delayIn: 1000
+        })
+        .click(function(e) {
+          e.preventDefault()
+        })
+    })
+
+    $(function () {
+      $("img[rel=popover-below]")
+        .popover({
+          placement: "below", delayIn: 1000
+        })
+        .click(function(e) {
+          e.preventDefault()
+        })
+    })
+</script>
+<% end %>

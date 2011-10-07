@@ -1,0 +1,19 @@
+title       "Combined CPU Usage"
+vtitle      "percent"
+area        :stacked
+description "The combined CPU usage for all Exim Anti Spam servers"
+
+field :iowait, :scale => 0.001,
+               :color => "red",
+               :alias => "IO Wait",
+               :data  => "sumSeries(derivative(mw*munin.cpu.iowait))"
+
+field :system, :scale => 0.001,
+               :color => "orange",
+               :alias => "System",
+               :data  => "sumSeries(derivative(mw*.munin.cpu.system))"
+
+field :user, :scale => 0.001,
+             :color => "yellow",
+             :alias => "User",
+             :data  => "sumSeries(derivative(mw*.munin.cpu.user))"

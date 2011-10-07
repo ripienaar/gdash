@@ -1,0 +1,6 @@
+title   "Combined Load"
+area    :all
+
+field :up, :color => "green",
+               :alias => "Up",
+               :data  => "sumSeries(mw*.munin.load.load)"

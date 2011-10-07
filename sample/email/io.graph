@@ -1,0 +1,12 @@
+title   "Combined IO"
+area    :first
+vtitle  "blocks"
+
+field :down, :color => "blue",
+               :alias => "Writes",
+               :data  => "sumSeries(derivative(mw*.munin.iostat.dev*_write))"
+
+field :up, :color => "green",
+               :alias => "Reads",
+               :data  => "sumSeries(derivative(mw*.munin.iostat.dev*_read))"
+
