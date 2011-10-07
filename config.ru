@@ -12,4 +12,4 @@ set :run, false
 
 templatedir = File.join(File.dirname(__FILE__), "graph_templates")
 
-run GDash::SinatraApp.new("http://unimatrix1.devco.net/", templatedir, "My Dashboard")
+run GDash::SinatraApp.new("http://graphite.example.net/", templatedir, "My Dashboard")
