@@ -35,7 +35,7 @@ class GDash
 
         set :static, true
         set :views, "views"
-        set :public, "public"
+        set :public_folder, "public"
 
         get '/' do
             if @dash_site.list.empty?
