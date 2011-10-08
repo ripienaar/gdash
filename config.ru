@@ -4,11 +4,10 @@ require 'gdash'
 
 set :run, false
 
-# Local logging
-#FileUtils.mkdir_p 'log' unless File.exists?('log')
-#log = File.new('log/sinatra.log', 'a')
-#$stdout.reopen(log)
-#$stderr.reopen(log)
+# If you want basic HTTP authentication uncomment this and set a u/p
+# use Rack::Auth::Basic do |username, password|
+#   username == 'admin' && password == 'secret'
+# end
 
 templatedir = File.join(File.expand_path(File.dirname(__FILE__)), "graph_templates")
 
