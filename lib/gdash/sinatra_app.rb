@@ -34,9 +34,14 @@ class GDash
         end
 
         set :static, true
+        set :views, "views"
         set :public, "public"
 
         get '/' do
+            if @dash_site.list.empty?
+                @error = "No dashboards found in the templates directory"
+            end
+
             erb :index
         end
 
