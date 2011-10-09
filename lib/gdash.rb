@@ -9,11 +9,11 @@ class GDash
     require 'gdash/sinatra_app'
     require 'graphite_graph'
 
-    attr_reader :graphite_base, :grahite_render, :dash_templates, :height, :width
+    attr_reader :graphite_base, :graphite_render, :dash_templates, :height, :width
 
     def initialize(graphite_base, render_url, dash_templates, width=500, height=250)
         @graphite_base = graphite_base
-        @grahite_render = @graphite_render = [@graphite_base, "/render/"].join
+        @graphite_render = [@graphite_base, "/render/"].join
         @dash_templates = dash_templates
         @height = height
         @width = width
