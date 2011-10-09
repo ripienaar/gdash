@@ -18,11 +18,11 @@
                         <ul class="nav">
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle">Dashboards</a>
-                                <% @dash_site.dashboards.sort_by{|b| b[:name]}.each do |board| %>
                                 <ul class="dropdown-menu">
+                                <% @dash_site.dashboards.sort_by{|b| b[:name]}.each do |board| %>
                                     <li><a href="<%= @prefix %>/dashboard/<%= board[:link] %>"><%= board[:name] %></a></li>
-                                </ul>
                                 <% end %>
+                                </ul>
                             </li>
                         </ul>
                         <ul class="nav secondary-nav">
