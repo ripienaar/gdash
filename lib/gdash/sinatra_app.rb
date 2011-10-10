@@ -34,8 +34,8 @@ class GDash
         end
 
         set :static, true
-        set :views, "views"
-        set :public_folder, "public"
+        set :views, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "views")
+        set :public_folder, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "public")
 
         get '/' do
             if @dash_site.list.empty?
