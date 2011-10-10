@@ -45,15 +45,37 @@ class GDash
             erb :index
         end
 
-        get '/dashboard/:dash' do
+	get '/dashboard/:dash/full/?*' do
+            params["splat"] = params["splat"].first.split("/")
+
+            params["columns"] = params["splat"][0].to_i || @graph_columns
+
+            if params["splat"].size == 3
+                width = params["splat"][1].to_i
+                height = params["splat"][2].to_i
+            else
+                width = @graph_width
+                height = @graph_height
+            end
+
+
+            if @dash_site.list.include?(params[:dash])
+                @dashboard = @dash_site.dashboard(params[:dash], width, height)
+            else
+                @error = "No dashboard called #{params[:dash]} found in #{@dash_site.list.join ','}"
+            end
+
+            erb :full_size_dashboard, :layout => false
+	end
+
+        get '/dashboard/:dash/' do
             if @dash_site.list.include?(params[:dash])
                 @dashboard = @dash_site.dashboard(params[:dash])
-
-                erb :dashboard
             else
-                @error = "No dashboard called #{params[:dash]} found in #{@dash_site.dashboards.join ','}"
-                erb :dashboard
+                @error = "No dashboard called #{params[:dash]} found in #{@dash_site.list.join ','}"
             end
+
+            erb :dashboard
         end
 
         helpers do

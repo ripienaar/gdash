@@ -18,11 +18,14 @@ class GDash
             @properties.merge!(YAML.load_file(yaml))
         end
 
-        def graphs
+        def graphs(width=nil, height=nil)
+            height ||= graph_height
+            width ||= graph_width
+
             graphs = Dir.entries(directory).select{|f| f.match(/\.graph$/)}
 
             graphs.sort.map do |graph|
-                {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), {:height => graph_height, :width => graph_width})}
+                {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), {:height => height, :width => width})}
             end
         end
 

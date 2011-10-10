@@ -11,6 +11,7 @@ class Array
 
             # how many to add
             padding = chunk_size - (arr.size % chunk_size)
+            padding = 0 if padding == chunk_size
 
             # pad at the end
             arr.concat([padded_with] * padding)

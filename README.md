@@ -92,6 +92,19 @@ The individual graphs fields can have the following properties:
 
 Graph items are added to the graph in order that they appear in this file
 
+Full Screen Displays?
+---------------------
+
+You can reuse your dashboards for big displays against a wall in your NOC or office
+by using the following url structure:
+
+    http://gdash.example.com/dashboard/email/full/4/600/300
+
+This will display the _email_ dashboard in _4_ columns each graph with a width of
+_600_ and a height of _300_
+
+The screen will refresh every minute
+
 Contact?
 --------
 
