@@ -20,7 +20,7 @@
                                 <a href="#" class="dropdown-toggle">Dashboards</a>
                                 <ul class="dropdown-menu">
                                 <% @dash_site.dashboards.sort_by{|b| b[:name]}.each do |board| %>
-                                    <li><a href="<%= @prefix %>/dashboard/<%= board[:link] %>"><%= board[:name] %></a></li>
+                                    <li><a href="<%= @prefix %>/dashboard/<%= board[:link] %>/"><%= board[:name] %></a></li>
                                 <% end %>
                                 </ul>
                             </li>
