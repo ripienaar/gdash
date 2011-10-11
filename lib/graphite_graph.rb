@@ -56,7 +56,7 @@ class GraphiteGraph
 
     def method_missing(meth, *args)
         if properties.include?(meth)
-            properties[meth] = args.first
+            properties[meth] = args.first unless @overrides.include?(meth)
         else
             super
         end
@@ -83,13 +83,13 @@ class GraphiteGraph
     def field(name, args)
         raise "A field called #{name} already exist for this graph" if targets.include?(name)
 
-        defaults = {}
+        default = {}
 
         if @service_mode
-            defaults[:data] = [info[:hostname], @service_mode[:service], @service_mode[:data], name].join(".")
+            default[:data] = [info[:hostname], @service_mode[:service], @service_mode[:data], name].join(".")
         end
 
-        targets[name] = defaults.merge args
+        targets[name] = default.merge(args)
         target_order << name
     end
 
