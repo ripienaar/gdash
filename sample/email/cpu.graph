@@ -6,7 +6,7 @@ description "The combined CPU usage for all Exim Anti Spam servers"
 field :iowait, :scale => 0.001,
                :color => "red",
                :alias => "IO Wait",
-               :data  => "sumSeries(derivative(mw*munin.cpu.iowait))"
+               :data  => "sumSeries(derivative(mw*.munin.cpu.iowait))"
 
 field :system, :scale => 0.001,
                :color => "orange",

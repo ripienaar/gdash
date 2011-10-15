@@ -8,12 +8,14 @@
 #
 #    field  :foo, :data => "some.data.item",
 #                 :derivative => false,
+#                 :dashed => true,
 #                 :color => "yellow"
 #
 #    service :munin, :cpu do
 #      # this takes <host>.munin.cpu.idle
 #      field :idle, :derivative => true,
 #                   :scale => 0.001,
+#                   :dashed => true,
 #                   :color => "blue"
 #    end
 #
@@ -125,13 +127,12 @@ class GraphiteGraph
                     graphite_target = "alias(#{graphite_target},\"#{name.to_s.capitalize}\")"
                 end
 
+                graphite_target = "color(#{graphite_target},\"#{target[:color]}\")" if target[:color]
+                graphite_target = "dashed(#{graphite_target})" if target[:dashed]
+
                 url_parts << "target=#{graphite_target}"
             end
-
-            colors << target[:color] if target[:color]
         end
-
-        url_parts << "colorList=#{colors.join(",")}" unless colors.empty?
 
         url_parts << "format=#{format}" if format
 
