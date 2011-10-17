@@ -1,8 +1,8 @@
 class GDash
     class SinatraApp < ::Sinatra::Base
-        def initialize(graphite_base, graph_templates, title="Graphite Dashboard", prefix="", graph_columns=2, graph_width=500, graph_height=250, whisper_dir="/var/lib/carbon/whisper")
+        def initialize(graphite_base, graph_templates, options = {})
             # where the whisper data is
-            @whisper_dir = whisper_dir
+            @whisper_dir = options.delete(:whisper_dir) || "/var/lib/carbon/whisper"
 
             # where graphite lives
             @graphite_base = graphite_base
@@ -14,19 +14,19 @@ class GDash
             @graph_templates = graph_templates
 
             # the dash site might have a prefix for its css etc
-            @prefix = prefix
+            @prefix = options.delete(:prefix) || ""
 
             # how many columns of graphs do you want on a page
-            @graph_columns = graph_columns
+            @graph_columns = options.delete(:graph_columns) || 2
 
             # how wide each graph should be
-            @graph_width = graph_width
+            @graph_width = options.delete(:graph_width) || 500
 
             # how hight each graph sould be
-            @graph_height = graph_height
+            @graph_height = options.delete(:graph_height) || 250
 
             # Dashboard title
-            @dash_title = title
+            @dash_title = options.delete(:title) || "Graphite Dashboard"
 
             @dash_site = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/dashboards"), @graph_width, @graph_height)
 

@@ -1,0 +1,11 @@
+:graphite: http://graphite.example.net
+:templatedir: /path/to/my/graph/templates
+#:username: admin
+#:password: secret
+:options:
+  :title: My Dashboard
+  :prefix: ""
+  :graph_columns: 2
+  :graph_width: 500
+  :graph_height: 250
+  :whisper_dir: "/var/lib/carbon/whisper"
