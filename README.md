@@ -71,26 +71,10 @@ is a sample:
 The dashboard will use the _description_ field to show popup information bubbles
 when someone hovers over a graph with their mouse for 2 seconds.
 
-The main graph properties are:
+The graphs are described using a DSL that has its own project and documented
+over at https://github.com/ripienaar/graphite-graph-dsl/wiki
 
-    * title - Main graph title
-    * vtitle - Vertical graph title
-    * area - Graphs stacked, either :all, :first, :none
-    * description - Textual description of the graph, show as mouse over popupts
-    * width - The graph width
-    * height - The graph height
-    * from - Standard Graphite from specification like _-1hour_
-
-The individual graphs fields can have the following properties:
-
-    * :scale - A scale to apply to the data
-    * :data - A raw Graphite data item that you can obtain using the normal browser
-    * :derivative - Should the graph be wrapped in _derivative()_
-    * :line - Draw a vertical line whenever data is found
-    * :alias - The name to show in the legend
-    * :color - The graph color
-
-Graph items are added to the graph in order that they appear in this file
+At the moment we do not support the _Related Items_ feature of the DSL.
 
 Full Screen Displays?
 ---------------------
