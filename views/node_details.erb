@@ -1,0 +1,58 @@
+<% unless @error %>
+<table>
+  <% keys = @graphs.keys.clone
+     keys.delete("miscellaneous")
+     keys.sort!
+     keys << "miscellaneous" %>
+
+  <ul class="pills">
+  <% keys.each do |group| %>
+    <li><a href="#<%= h group %>"><%= group.upcase %></li>
+  <% end %>
+  </ul>
+
+  <% keys.each do |group| %>
+    <a name="<%= h group %>">
+    <tr><td colspan=2><strong><%= group.upcase %></strong></td></tr>
+    <% row = 1 %>
+    <% @graphs[group].in_groups_of(2) do |graphs| %>
+      <tr>
+      <% graphs.each do |graph| %>
+        <td>
+        <% if graph %>
+                <% if graph[:description] %>
+                  <img src='<%= [@graphite_render, graph.url].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
+                <% else %>
+                  <img src='<%= [@graphite_render, graph.url].join("?") %>'>
+                <% end %>
+        <% end %>
+        </td>
+      <% end %>
+      <% row += 1 %>
+      </tr>
+    <% end %>
+    <tr><td colspan=2></td></tr>
+  <% end %>
+</table>
+<script>
+    $(function () {
+      $("img[rel=popover-above]")
+        .popover({
+          placement: "above", delayIn: 1000
+        })
+        .click(function(e) {
+          e.preventDefault()
+        })
+    })
+
+    $(function () {
+      $("img[rel=popover-below]")
+        .popover({
+          placement: "below", delayIn: 1000
+        })
+        .click(function(e) {
+          e.preventDefault()
+        })
+    })
+</script>
+<% end %>

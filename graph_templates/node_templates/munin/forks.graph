@@ -1,0 +1,9 @@
+title       "Fork Rate"
+vtitle      "forks / second"
+area        :stacked
+description "The number of forks (new processes started)"
+
+field :forks, :color => "blue",
+	      :alias => "Forks",
+	      :derivative => true,
+	      :data  => "%s.munin.forks.forks" % info[:hostname]

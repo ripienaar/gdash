@@ -1,0 +1,14 @@
+title   "CPU IRQ Usage"
+area    :stacked
+
+service :munin, :cpu do
+  field :irq,    :derivative => true,
+                 :scale => 0.001,
+                 :color => "red",
+		 :alias => "IRQ"
+
+  field :softirq, :derivative => true,
+                  :scale => 0.001,
+                  :color => "yellow",
+                  :alias => "Batched IRQ"
+end

@@ -1,0 +1,20 @@
+title   "CPU Usage"
+vtitle  "percent"
+area    :stacked
+
+service :munin, :cpu do
+  field :iowait, :derivative => true,
+                 :scale => 0.001,
+                 :color => "red",
+                 :alias => "IO Wait"
+
+  field :system, :derivative => true,
+                 :scale => 0.001,
+                 :color => "orange",
+                 :alias => "System"
+
+  field :user,   :derivative => true,
+                 :scale => 0.001,
+                 :color => "yellow",
+                 :alias => "User"
+end

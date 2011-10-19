@@ -53,6 +53,30 @@ class GDash
       erb :index
     end
 
+    get '/node/:node/:type' do
+      if Node.list(@whisper_dir, params[:type]).include?(params[:node])
+        @node = Node.new(params[:node], File.join(@graph_templates, "node_templates"), @whisper_dir)
+        @services = @node.services(params[:type])
+
+        @graphs = {"miscellaneous" => []}
+
+        @services.each do |service|
+          graphs = @node.service_graphs(params[:type], service)
+
+          if graphs.size == 1
+            @graphs["miscellaneous"].concat graphs
+          else
+            @graphs[service] ||= []
+            @graphs[service] = graphs
+          end
+        end
+      else
+        @error = "Node %s does not have data of type %s" % [display_host(params[:node]), params[:type]]
+      end
+
+      erb :node_details
+    end
+
     get '/:category/:dash/full/?*' do
       params["splat"] = params["splat"].first.split("/")
 
@@ -90,6 +114,10 @@ class GDash
       include Rack::Utils
 
       alias_method :h, :escape_html
+
+      def display_host(host)
+        host.gsub("_", ".")
+      end
     end
   end
 end
