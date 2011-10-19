@@ -16,14 +16,16 @@
                     <div class="container">
                         <h3><a href="<%= @prefix %>/"><%= @dash_title %></a></h3>
                         <ul class="nav">
+                        <% @top_level.each_key do |category| %>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle">Dashboards</a>
+                                <a href="#" class="dropdown-toggle"><%= category %></a>
                                 <ul class="dropdown-menu">
-                                <% @dash_site.dashboards.sort_by{|b| b[:name]}.each do |board| %>
-                                    <li><a href="<%= @prefix %>/dashboard/<%= board[:link] %>/"><%= board[:name] %></a></li>
+                                <% @top_level[category].dashboards.sort_by{|b| b[:name]}.each do |board| %>
+                                    <li><a href="<%= [@prefix, category, board[:link]].join('/') %>/"><%= board[:name] %></a></li>
                                 <% end %>
                                 </ul>
                             </li>
+                        <% end %>
                         </ul>
                         <ul class="nav secondary-nav">
                             <li><a href="<%= @graphite_base %>">Data Browser</a></li>

@@ -28,7 +28,14 @@ class GDash
             # Dashboard title
             @dash_title = title
 
-            @dash_site = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/dashboards"), @graph_width, @graph_height)
+            @top_level = Hash.new
+            Dir.entries(@graph_templates).each do |category|
+              if File.directory?("#{@graph_templates}/#{category}")
+                unless ("#{category}" =~ /^\./ )
+                  @top_level["#{category}"] = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/#{category}"), @graph_width, @graph_height)
+                end
+              end
+            end
 
             super()
         end
@@ -38,14 +45,14 @@ class GDash
         set :public_folder, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "public")
 
         get '/' do
-            if @dash_site.list.empty?
+            if @top_level.empty?
                 @error = "No dashboards found in the templates directory"
             end
 
             erb :index
         end
 
-	get '/dashboard/:dash/full/?*' do
+	get '/:category/:dash/full/?*' do
             params["splat"] = params["splat"].first.split("/")
 
             params["columns"] = params["splat"][0].to_i || @graph_columns
@@ -59,20 +66,20 @@ class GDash
             end
 
 
-            if @dash_site.list.include?(params[:dash])
-                @dashboard = @dash_site.dashboard(params[:dash], width, height)
+            if @top_level["#{params[:category]}"].list.include?(params[:dash])
+                @dashboard = @top_level[@params[:category]].dashboard(params[:dash], width, height)
             else
-                @error = "No dashboard called #{params[:dash]} found in #{@dash_site.list.join ','}"
+                @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
             end
 
             erb :full_size_dashboard, :layout => false
 	end
 
-        get '/dashboard/:dash/' do
-            if @dash_site.list.include?(params[:dash])
-                @dashboard = @dash_site.dashboard(params[:dash])
+        get '/:category/:dash/' do
+            if @top_level["#{params[:category]}"].list.include?(params[:dash])
+                @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
             else
-                @error = "No dashboard called #{params[:dash]} found in #{@dash_site.list.join ','}"
+                @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
             end
 
             erb :dashboard

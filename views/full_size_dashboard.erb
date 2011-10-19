@@ -12,7 +12,7 @@
         <% graphs.each do |graph| %>
             <td valign="middle" align="center">
             <% if graph %>
-                <img src='<%= [@dash_site.graphite_render, graph[:graphite][:url]].join "?" %>'>
+                <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'>
             <% end %>
             </td>
         <% end %>

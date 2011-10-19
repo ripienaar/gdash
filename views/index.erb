@@ -1,15 +1,18 @@
 <% unless @error %>
+<%   @top_level.each do |key, value| %>
+<h2> <%= key %> </h2>
 <table>
     <thead>
         <th>Name</th>
         <th>Description</th>
     </thead>
     <tbody>
-        <% @dash_site.dashboards.sort_by{|b| b[:name]}.each do |board| %>
+        <% @top_level[key].dashboards.sort_by{|b| b[:name]}.each do |board| %>
         <tr>
-            <td><a href="<%= [@prefix, "dashboard", board[:link]].join('/') %>/"><%= board[:name] %></a></td><td><%= board[:description] %></td>
+            <td><a href="<%= [@prefix, key, board[:link]].join('/') %>/"><%= board[:name] %></a></td><td><%= board[:description] %></td>
         </tr>
         <% end %>
     </tbody>
 </table>
+<%   end %>
 <% end %>
