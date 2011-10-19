@@ -15,18 +15,16 @@ Config?
 This dashboard is a Sinatra application, I suggest deploying it
 in Passenger or other Sinatra application server.
 
-A sample _config.ru_ is included, you should adjust the url to
-your Graphite etc in there.
+A sample _gdash.yaml-sample_ is included, you should rename it to
+_gdash.yaml_ and adjust the url to your Graphite etc in there.
 
-
-    templatedir = File.join(File.dirname(__FILE__), "graph_templates")
-
-    run GDash::SinatraApp.new("http://graphite.example.net/", templatedir, "My Dashboard")
-
-The SinatraApp class can take a number of arguments:
+The SinatraApp class take two required arguments:
 
     * Where graphite is installed
     * The directory that has your _dashboards_ directory full of templates
+
+and additional options:
+
     * The title to show at the top of your Graphite
     * A prefix to prepend to all URLs in the dashboard
     * How many columns of graphs to create, 2 by default.

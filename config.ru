@@ -4,11 +4,12 @@ require 'gdash'
 
 set :run, false
 
-# If you want basic HTTP authentication uncomment this and set a u/p
-# use Rack::Auth::Basic do |username, password|
-#   username == 'admin' && password == 'secret'
-# end
+config = YAML.load_file(File.expand_path("../config/gdash.yaml", __FILE__))
 
-templatedir = File.join(File.expand_path(File.dirname(__FILE__)), "graph_templates")
+# If you want basic HTTP authentication
+# include :username and :password in gdash.yaml
+use Rack::Auth::Basic do |username, password|
+  username == config[:username] && password == config[:password]
+end if config[:username] && config[:password]
 
-run GDash::SinatraApp.new("http://graphite.example.net/", templatedir, "My Dashboard")
+run GDash::SinatraApp.new(config[:graphite], config[:templatedir], config[:options])
