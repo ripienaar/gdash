@@ -37,10 +37,12 @@ The SinatraApp class can take a number of arguments:
 Creating Dashboards?
 --------------------
 
-Simply create a sub directory with a short name for your new dashboard under
-the _templatedir_.
+You can have multiple top level categories of dashboard.  Just create directories
+in the _templatedir_ for each top level category.
 
-You need a file called _dash.yaml_ in there, here is a sample:
+In each top level category create a sub directory with a short name for each new dashboard.
+
+You need a file called _dash.yaml_ for each dashboard, here is a sample:
 
     :name: Email Metrics
     :description: Hourly metrics for the email system
