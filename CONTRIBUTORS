@@ -1,0 +1,5 @@
+ * Nathan Haneysmith - Added support for multiple top level categories
+ * Elmer Rivera - Made the config.ru configurable
+ * Jeremy Carroll - Bug fixes to the top level menu
+ * @nstielau - Use absolute paths in views
+ * Jason Dixon - Fixed spelling errors in code
