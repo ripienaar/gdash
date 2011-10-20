@@ -1,5 +1,4 @@
 <% unless @error %>
-<table>
   <% keys = @graphs.keys.clone
      keys.delete("miscellaneous")
      keys.sort!
@@ -11,10 +10,11 @@
   <% end %>
   </ul>
 
+  <% row = 1 %>
   <% keys.each do |group| %>
-    <a name="<%= h group %>">
+<a name="<%= h group %>">
+<table>
     <tr><td colspan=2><strong><%= group.upcase %></strong></td></tr>
-    <% row = 1 %>
     <% @graphs[group].in_groups_of(2) do |graphs| %>
       <tr>
       <% graphs.each do |graph| %>
@@ -31,9 +31,8 @@
       <% row += 1 %>
       </tr>
     <% end %>
-    <tr><td colspan=2></td></tr>
-  <% end %>
 </table>
+  <% end %>
 <script>
     $(function () {
       $("img[rel=popover-above]")
