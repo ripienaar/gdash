@@ -1,0 +1,13 @@
+title       "Interrupts and Context Switches"
+vtitle      "events"
+description "<p>This graph shows the number of interrupts and context switches on the system. These are typically high on a busy system.</p><p>Interrupts are events that alter sequence of instructions executed by a processor. They can come from either hardware (exceptions, NMI, IRQ) or software.</p><p>A context switch occurs when a multitasking operatings system suspends the currently running process, and starts executing another.</p>"
+
+service :munin, :interrupts do
+  field :intr, :color => "blue",
+  	       :alias => "Interrupts",
+  	       :derivative => true
+
+  field :ctx, :color => "green",
+  	      :alias => "Context Switches",
+  	      :derivative => true
+end

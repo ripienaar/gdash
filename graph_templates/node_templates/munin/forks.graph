@@ -1,5 +1,5 @@
 title       "Fork Rate"
-vtitle      "forks / second"
+vtitle      "forks"
 area        :stacked
 description "The number of forks (new processes started)"
 

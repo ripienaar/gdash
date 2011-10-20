@@ -1,0 +1,11 @@
+title   "Munin Node Collection Stats"
+vtitle  "seconds"
+description "Random sleep time and total time spent collecting Munin data"
+
+service :munin, :um_munin do
+  field :sleep, :color => "blue",
+		:alias => "Sleep Time"
+
+  field :time, :color => "green",
+               :alias => "Collection Time"
+end

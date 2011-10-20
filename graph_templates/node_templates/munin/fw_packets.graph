@@ -1,0 +1,14 @@
+title       "Firewall Throughput"
+vtitle      "packets"
+area        :first
+description "Packet rates handled by the IPTables firewalls"
+
+service :munin, :fw_packets do
+  field :received, :color => "blue",
+  	           :alias => "Received",
+  	           :derivative => true
+
+  field :forwarded, :color => "green",
+  	            :alias => "Forwarded",
+  	            :derivative => true
+end

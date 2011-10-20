@@ -1,0 +1,10 @@
+title   "Munin Node Metrics"
+description "Services discovered and Metrics sent to the Unimatrix metrics collector"
+
+service :munin, :um_munin do
+  field :metrics, :color => "blue",
+		  :alias => "Metrics"
+
+  field :services, :color => "green",
+                   :alias => "Services"
+end
