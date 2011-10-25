@@ -42,7 +42,11 @@ class GDash
 
         set :static, true
         set :views, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "views")
-        set :public_folder, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "public")
+        if Sinatra.const_defined?("VERSION") && Gem::Version.new(Sinatra::VERSION) >= Gem::Version.new("1.3.0")
+          set :public_folder, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "public")
+        else
+          set :public, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "public")          
+        end
 
         get '/' do
             if @top_level.empty?
