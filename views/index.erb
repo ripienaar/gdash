@@ -3,8 +3,8 @@
 <h2> <%= key.capitalize %> </h2>
 <table>
     <thead>
-        <th>Name</th>
-        <th>Description</th>
+        <th width="30%">Name</th>
+        <th width="70%">Description</th>
     </thead>
     <tbody>
         <% @top_level[key].dashboards.sort_by{|b| b[:name]}.each do |board| %>
