@@ -20,12 +20,16 @@ class GraphiteGraph
                    :width => 500,
                    :height => 250,
                    :from => "-1hour",
-                   :unil => "now",
+                   :until => "now",
                    :surpress => false,
                    :description => nil,
                    :hide_legend => nil,
                    :ymin => nil,
                    :ymax => nil,
+                   :linewidth => nil,
+                   :fontsize => nil,
+                   :fontbold => false,
+                   :draw_null_as_zero => false,
                    :area => :none}.merge(@overrides)
 
   end
@@ -186,9 +190,13 @@ class GraphiteGraph
     end
 
     url_parts << "areaMode=#{properties[:area]}" if properties[:area]
-    url_parts << "hideLegend=#{properties[:hide_legend]}" if properties[:hide_legend]
+    url_parts << "hideLegend=#{properties[:hide_legend]}" if properties.include?(:hide_legend)
     url_parts << "yMin=#{properties[:ymin]}" if properties[:ymin]
     url_parts << "yMax=#{properties[:ymax]}" if properties[:ymax]
+    url_parts << "lineWidth=#{properties[:linewidth]}" if properties[:linewidth]
+    url_parts << "fontSize=#{properties[:fontsize]}" if properties[:fontsize]
+    url_parts << "fontBold=#{properties[:fontbold]}" if properties[:fontbold]
+    url_parts << "drawNullAsZero=#{properties[:draw_null_as_zero]}" if properties[:draw_null_as_zero]
 
     target_order.each do |name|
       target = targets[name]
