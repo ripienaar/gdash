@@ -1,3 +1,5 @@
+2011/11/12 - Include the uncompiled less files and a js script to compile on demand
+             making it easier to customize the look and feel of gdash - thanks Joe Miller
 2011/10/18 - Multiple top level categories are supported
 2011/10/16 - The settings that used to be in config.ru is now in a config file
 2011/10/10 - Add a full screen dashboard mode
