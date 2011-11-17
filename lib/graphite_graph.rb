@@ -30,6 +30,8 @@ class GraphiteGraph
                    :fontsize => nil,
                    :fontbold => false,
                    :draw_null_as_zero => false,
+                   :fgcolor => nil,
+                   :bgcolor => nil,
                    :area => :none}.merge(@overrides)
 
   end
@@ -197,6 +199,8 @@ class GraphiteGraph
     url_parts << "fontSize=#{properties[:fontsize]}" if properties[:fontsize]
     url_parts << "fontBold=#{properties[:fontbold]}" if properties[:fontbold]
     url_parts << "drawNullAsZero=#{properties[:draw_null_as_zero]}" if properties[:draw_null_as_zero]
+    url_parts << "bgcolor=#{properties[:bgcolor]}" if properties[:bgcolor]
+    url_parts << "fgcolor=#{properties[:fgcolor]}" if properties[:fgcolor]
 
     target_order.each do |name|
       target = targets[name]
