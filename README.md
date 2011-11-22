@@ -89,6 +89,19 @@ _600_ and a height of _300_
 
 The screen will refresh every minute
 
+Custom Time Periods?
+--------------------
+
+You can reuse your dashboards and adjust the time period by using the following url
+structure:
+
+    http://gdash.example.com/dashboard/email/time/-8d/-7d
+
+This will display the _email_ dashboard with a time period same day last week.
+If you hit /dashboard/email/time/ it will default to the past hour (-1hour)
+See http://graphite.readthedocs.org/en/1.0/url-api.html#from-until for more info 
+acceptable 'from' and 'until' values.
+
 Contact?
 --------
 

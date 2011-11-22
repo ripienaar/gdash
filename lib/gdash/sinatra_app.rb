@@ -79,6 +79,21 @@ class GDash
             erb :full_size_dashboard, :layout => false
 	end
 
+        get '/:category/:dash/time/?*' do
+            params["splat"] = params["splat"].first.split("/")
+
+            from = params["splat"][0] || "-1hour"
+            untiltime = params["splat"][1] || "now"
+
+            if @top_level["#{params[:category]}"].list.include?(params[:dash])
+                @dashboard = @top_level[@params[:category]].dashboard(params[:dash], nil, nil, from, untiltime)
+            else
+                @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
+            end
+
+            erb :time_dashboard
+        end
+
         get '/:category/:dash/' do
             if @top_level["#{params[:category]}"].list.include?(params[:dash])
                 @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
