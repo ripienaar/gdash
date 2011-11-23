@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'yaml'
 require 'erb'
+require 'redcarpet'
 
 class GDash
     require 'gdash/dashboard'
