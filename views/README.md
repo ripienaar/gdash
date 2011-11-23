@@ -96,11 +96,32 @@ You can reuse your dashboards and adjust the time period by using the following 
 structure:
 
     http://gdash.example.com/dashboard/email/time/-8d/-7d
+    http://gdash.example.com/dashboard/email/time/-1d
 
-This will display the _email_ dashboard with a time period same day last week.
+This will display the _email_ dashboard with a time period same day last week and
+the second form will show the past 24hours (default end time is 'now').
 If you hit /dashboard/email/time/ it will default to the past hour (-1hour)
-See http://graphite.readthedocs.org/en/1.0/url-api.html#from-until for more info 
-acceptable 'from' and 'until' values.
+
+There are multiple formats for these functions:
+
+    -RELATIVE_TIME
+    ABSOLUTE_TIME
+
+RELATIVE_TIME is a length of time since the current time. It is always preceded by 
+a minus sign ( - ) and followed by a unit of time. Valid units of time:
+
+Abbrieviations:
+
+    s	Seconds
+    min	Minutes
+    h	Hours
+    d	Days
+    w	Weeks
+    mon	30 Days (month)
+    y	365 Days (year)
+
+ABSOLUTE_TIME is in the format HH:MM_YYMMDD, YYYYMMDD, MM/DD/YY, or any other 
+at(1)-compatible time format.
 
 Contact?
 --------
