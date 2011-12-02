@@ -27,7 +27,7 @@ class GraphiteGraph
                    :ymin => nil,
                    :ymax => nil,
                    :linewidth => nil,
-		   :connected => false,
+                   :connected => false,
                    :fontsize => nil,
                    :fontbold => false,
                    :draw_null_as_zero => false,
@@ -222,7 +222,7 @@ class GraphiteGraph
 
         graphite_target = "color(#{graphite_target},\"#{target[:color]}\")" if target[:color]
         graphite_target = "dashed(#{graphite_target})" if target[:dashed]
-	
+
         graphite_target = "secondYAxis(#{graphite_target})" if target[:second_y_axis]
 
         if target[:alias]
