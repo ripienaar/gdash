@@ -27,12 +27,11 @@ class GraphiteGraph
                    :ymin => nil,
                    :ymax => nil,
                    :linewidth => nil,
-                   :connected => false,
+                   :linemode => nil,
                    :fontsize => nil,
                    :fontbold => false,
+                   :timezone => nil,
                    :draw_null_as_zero => false,
-                   :fgcolor => nil,
-                   :bgcolor => nil,
                    :area => :none}.merge(@overrides)
 
   end
@@ -163,8 +162,6 @@ class GraphiteGraph
 
     args[:dashed] = true if options[:dashed]
 
-    args[:connected] = true if options[:connected]
-
     field "line_#{@linecount}", args
 
     @linecount += 1
@@ -199,12 +196,11 @@ class GraphiteGraph
     url_parts << "yMin=#{properties[:ymin]}" if properties[:ymin]
     url_parts << "yMax=#{properties[:ymax]}" if properties[:ymax]
     url_parts << "lineWidth=#{properties[:linewidth]}" if properties[:linewidth]
-    url_parts << "lineMode=#{'connected'}" if properties[:connected]
+    url_parts << "lineMode=#{properties[:linemode]}" if properties[:linemode]
     url_parts << "fontSize=#{properties[:fontsize]}" if properties[:fontsize]
     url_parts << "fontBold=#{properties[:fontbold]}" if properties[:fontbold]
     url_parts << "drawNullAsZero=#{properties[:draw_null_as_zero]}" if properties[:draw_null_as_zero]
-    url_parts << "bgcolor=#{properties[:bgcolor]}" if properties[:bgcolor]
-    url_parts << "fgcolor=#{properties[:fgcolor]}" if properties[:fgcolor]
+    url_parts << "tz=#{properties[:timezone]}" if properties[:timezone]
 
     target_order.each do |name|
       target = targets[name]
@@ -218,12 +214,11 @@ class GraphiteGraph
 
         graphite_target = "derivative(#{graphite_target})" if target[:derivative]
         graphite_target = "scale(#{graphite_target},#{target[:scale]})" if target[:scale]
-        graphite_target = "movingAverage(#{graphite_target},#{target[:smoothing]})" if target[:smoothing]
         graphite_target = "drawAsInfinite(#{graphite_target})" if target[:line]
+        graphite_target = "movingAverage(#{graphite_target},#{target[:smoothing]})" if target[:smoothing]
 
         graphite_target = "color(#{graphite_target},\"#{target[:color]}\")" if target[:color]
         graphite_target = "dashed(#{graphite_target})" if target[:dashed]
-
         graphite_target = "secondYAxis(#{graphite_target})" if target[:second_y_axis]
 
         if target[:alias]
