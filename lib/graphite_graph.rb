@@ -218,6 +218,7 @@ class GraphiteGraph
 
         graphite_target = "derivative(#{graphite_target})" if target[:derivative]
         graphite_target = "scale(#{graphite_target},#{target[:scale]})" if target[:scale]
+        graphite_target = "movingAverage(#{graphite_target},#{target[:smoothing]})" if target[:smoothing]
         graphite_target = "drawAsInfinite(#{graphite_target})" if target[:line]
 
         graphite_target = "color(#{graphite_target},\"#{target[:color]}\")" if target[:color]
