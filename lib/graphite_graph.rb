@@ -24,6 +24,7 @@ class GraphiteGraph
                    :surpress => false,
                    :description => nil,
                    :hide_legend => nil,
+                   :hide_grid => nil,
                    :ymin => nil,
                    :ymax => nil,
                    :linewidth => nil,
@@ -32,6 +33,8 @@ class GraphiteGraph
                    :fontbold => false,
                    :timezone => nil,
                    :draw_null_as_zero => false,
+                   :major_grid_line_color => nil,
+                   :minor_grid_line_color => nil,
                    :area => :none}.merge(@overrides)
 
   end
@@ -193,6 +196,7 @@ class GraphiteGraph
 
     url_parts << "areaMode=#{properties[:area]}" if properties[:area]
     url_parts << "hideLegend=#{properties[:hide_legend]}" if properties.include?(:hide_legend)
+    url_parts << "hideGrid=#{properties[:hide_grid]}" if properties[:hide_grid]
     url_parts << "yMin=#{properties[:ymin]}" if properties[:ymin]
     url_parts << "yMax=#{properties[:ymax]}" if properties[:ymax]
     url_parts << "lineWidth=#{properties[:linewidth]}" if properties[:linewidth]
@@ -201,6 +205,8 @@ class GraphiteGraph
     url_parts << "fontBold=#{properties[:fontbold]}" if properties[:fontbold]
     url_parts << "drawNullAsZero=#{properties[:draw_null_as_zero]}" if properties[:draw_null_as_zero]
     url_parts << "tz=#{properties[:timezone]}" if properties[:timezone]
+    url_parts << "majorGridLineColor=#{properties[:major_grid_line_color]}" if properties[:major_grid_line_color]
+    url_parts << "minorGridLineColor=#{properties[:minor_grid_line_color]}" if properties[:minor_grid_line_color]
 
     target_order.each do |name|
       target = targets[name]
@@ -234,7 +240,7 @@ class GraphiteGraph
     url_parts << "format=#{format}" if format
 
     if url
-      url_parts.join("&")
+      URI.encode(url_parts.join("&"))
     else
       url_parts
     end
