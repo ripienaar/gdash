@@ -240,7 +240,7 @@ class GraphiteGraph
     url_parts << "format=#{format}" if format
 
     if url
-      url_parts.join("&")
+      URI.encode(url_parts.join("&"))
     else
       url_parts
     end
