@@ -16,6 +16,9 @@ class GDash
             # the dash site might have a prefix for its css etc
             @prefix = options.delete(:prefix) || ""
 
+            # the page refresh rate
+            @refresh_rate = options.delete(:refresh_rate) || 60
+
             # how many columns of graphs do you want on a page
             @graph_columns = options.delete(:graph_columns) || 2
 

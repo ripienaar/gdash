@@ -28,6 +28,7 @@ and additional options:
     * The title to show at the top of your Graphite
     * A prefix to prepend to all URLs in the dashboard
     * How many columns of graphs to create, 2 by default.
+    * How often dashboard page is refreshed, 60 sec by default.
     * The width of the graphs, 500 by default
     * The height of the graphs, 250 by default
     * Where your whisper files are stored - future use
