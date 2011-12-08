@@ -5,6 +5,7 @@
 :options:
   :title: My Dashboard
   :prefix: ""
+  :refresh_rate: 60
   :graph_columns: 2
   :graph_width: 500
   :graph_height: 250
