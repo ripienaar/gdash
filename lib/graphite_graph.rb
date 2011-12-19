@@ -3,7 +3,7 @@ require 'uri'
 # see https://github.com/ripienaar/graphite-graph-dsl/wiki
 # for full details
 class GraphiteGraph
-  attr_reader :info, :properties, :targets, :target_order
+  attr_reader :info, :properties, :targets, :target_order, :critical_threshold, :warning_threshold
 
   def initialize(file, overrides={}, info={})
     @info = info
@@ -11,6 +11,9 @@ class GraphiteGraph
     @munin_mode = false
     @overrides = overrides
     @linecount = 0
+
+    @critical_threshold = []
+    @warning_threshold = []
 
     load_graph
   end
@@ -37,7 +40,6 @@ class GraphiteGraph
                    :major_grid_line_color => nil,
                    :minor_grid_line_color => nil,
                    :area => :none}.merge(@overrides)
-
   end
 
   def [](key)
@@ -124,27 +126,19 @@ class GraphiteGraph
       aberration_args = args.clone
       aberration_args[:data] = "holtWintersAberration(keepLastValue(#{aberration_args[:data]}))"
       aberration_args[:color] = args[:aberration_color] || "orange"
-      aberration_args[:alias] = "#{args[:alias]} Aberation"
+      aberration_args[:alias] = "#{args[:alias]} Aberration"
       aberration_args[:second_y_axis] = true if aberration_args[:aberration_second_y]
       field "#{name}_aberration", aberration_args
     end
 
     if args[:critical]
-      [args[:critical]].flatten.each_with_index do |crit, index|
-        color = args[:critical_color] || "red"
-        caption = "#{args[:alias]} Critical"
-
-        line :caption => "#{name}_crit_#{index}", :value => crit, :color => color, :dashed => true
-      end
+      color = args[:critical_color] || "red"
+      critical :value => args[:critical], :color => color, :name => name
     end
 
     if args[:warning]
-      [args[:warning]].flatten.each_with_index do |warn, index|
-        color = args[:warning_color] || "orange"
-        caption = "#{args[:alias]} Warning"
-
-        line :caption => "#{name}_warn_#{index}", :value => warn, :color => color, :dashed => true
-      end
+      color = args[:warning_color] || "orange"
+      warning :value => args[:warning], :color => color, :name => name
     end
 
     args[:color] ||= "yellow"
@@ -154,6 +148,52 @@ class GraphiteGraph
 
   alias :forecast :hw_predict
 
+  # draws a single dashed line with predictable names, defaults to red line
+  #
+  # data can be a single item or a 2 item array, it doesn't break if you supply
+  # more but # more than 2 items just doesn't make sense generally
+  #
+  # critical :value => [700, -700], :color => "red"
+  #
+  # You can prevent the line from being drawn but just store the ranges for monitoring
+  # purposes by adding :hide => true to the arguments
+  def critical(options)
+    raise "critical lines need a value" unless options[:value]
+
+    @critical_threshold = [options[:value]].flatten
+
+    options[:color] ||= "red"
+
+    unless options[:hide]
+      @critical_threshold.each_with_index do |crit, index|
+        line :caption => "crit_#{index}", :value => crit, :color => options[:color], :dashed => true
+      end
+    end
+  end
+
+  # draws a single dashed line with predictable names, defaults to orange line
+  #
+  # data can be a single item or a 2 item array, it doesn't break if you supply
+  # more but # more than 2 items just doesn't make sense generally
+  #
+  # warning :value => [700, -700], :color => "orange"
+  #
+  # You can prevent the line from being drawn but just store the ranges for monitoring
+  # purposes by adding :hide => true to the arguments
+  def warning(options)
+    raise "warning lines need a value" unless options[:value]
+
+    @warning_threshold = [options[:value]].flatten
+
+    options[:color] ||= "orange"
+
+    unless options[:hide]
+      @warning_threshold.flatten.each_with_index do |warn, index|
+        line :caption => "warn_#{index}", :value => warn, :color => options[:color], :dashed => true
+      end
+    end
+  end
+
   # draws a simple line on the graph with a caption, value and color.
   #
   # line :caption => "warning", :value => 50, :color => "orange"
@@ -162,7 +202,9 @@ class GraphiteGraph
     raise "lines need a value" unless options.include?(:value)
     raise "lines need a color" unless options.include?(:color)
 
-    args = {:data => "threshold(#{options[:value]})", :color => options[:color], :alias => options[:caption]}
+    options[:alias] = options[:caption] unless options[:alias]
+
+    args = {:data => "threshold(#{options[:value]})", :color => options[:color], :alias => options[:alias]}
 
     args[:dashed] = true if options[:dashed]
 
