@@ -32,4 +32,6 @@ class Array
     end
 end
 
-
+class GraphiteGraph
+    attr_accessor :properties, :file
+end
