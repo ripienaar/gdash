@@ -148,6 +148,25 @@ class GraphiteGraph
 
   alias :forecast :hw_predict
 
+  # takes a series of metrics in a wildcard query and aggregates the values by a subgroup
+  #
+  # data must contain a wildcard query, a subgroup position, and an optional aggregate function.
+  # if the aggregate function is omitted, sumSeries will be used.
+  #
+  # group :data => "metric.*.value", :subgroup => "2", :aggregator => "sumSeries"
+  #
+  def group(name, args)
+    raise ":data is needed as an argument to group metrics" unless args[:data]
+    raise ":subgroup is needed as an argument to group metrics" unless args.include?(:subgroup)
+
+    args[:aggregator] = "sumSeries" unless args[:aggregator]
+
+    group_args = args.clone
+    group_args[:data] = "groupByNode(#{group_args[:data]},#{group_args[:subgroup]},\"#{group_args[:aggregator]}\")"
+    field "#{name}_group", group_args
+
+  end
+
   # draws a single dashed line with predictable names, defaults to red line
   #
   # data can be a single item or a 2 item array, it doesn't break if you supply
@@ -270,10 +289,12 @@ class GraphiteGraph
         graphite_target = "dashed(#{graphite_target})" if target[:dashed]
         graphite_target = "secondYAxis(#{graphite_target})" if target[:second_y_axis]
 
-        if target[:alias]
-          graphite_target = "alias(#{graphite_target},\"#{target[:alias]}\")"
-        else
-          graphite_target = "alias(#{graphite_target},\"#{name.to_s.capitalize}\")"
+        unless target.include?(:subgroup)
+          if target[:alias]
+            graphite_target = "alias(#{graphite_target},\"#{target[:alias]}\")"
+          else
+            graphite_target = "alias(#{graphite_target},\"#{name.to_s.capitalize}\")"
+          end
         end
 
         url_parts << "target=#{graphite_target}"
