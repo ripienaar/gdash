@@ -31,6 +31,8 @@ class GDash
             # Dashboard title
             @dash_title = options.delete(:title) || "Graphite Dashboard"
 
+            @intervals = options.delete(:intervals) || []
+
             @top_level = Hash.new
             Dir.entries(@graph_templates).each do |category|
               if File.directory?("#{@graph_templates}/#{category}")
@@ -59,7 +61,32 @@ class GDash
             erb :index
         end
 
-	get '/:category/:dash/full/?*' do
+        get '/:category/:dash/details/:name' do
+            if @top_level["#{params[:category]}"].list.include?(params[:dash])
+                @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+            else
+                @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
+            end
+
+            if @intervals.empty?
+              @error = "No intervals defined in configuration"
+            end
+
+            if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
+              @graphs = @intervals.map do |e|
+                new_props = {:from => e[0],
+                             :title => "#{main_graph.properties[:title]} - #{e[1]}"}
+                new_props = main_graph.properties.merge new_props
+                GraphiteGraph.new(main_graph.file, new_props)
+              end
+            else
+              @error = "No such graph available"
+            end
+
+            erb :detailed_dashboard
+        end
+
+        get '/:category/:dash/full/?*' do
             params["splat"] = params["splat"].first.split("/")
 
             params["columns"] = params["splat"][0].to_i || @graph_columns
@@ -80,7 +107,7 @@ class GDash
             end
 
             erb :full_size_dashboard, :layout => false
-	end
+        end
 
         get '/:category/:dash/' do
             if @top_level["#{params[:category]}"].list.include?(params[:dash])

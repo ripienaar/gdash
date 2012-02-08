@@ -10,3 +10,9 @@
   :graph_width: 500
   :graph_height: 250
   :whisper_dir: "/var/lib/carbon/whisper"
+  :intervals:
+    - [ "-1hour", "1 hour" ]
+    - [ "-2hour", "2 hour" ]
+    - [ "-1day", "1 day" ]
+    - [ "-1month", "1 month" ]
+    - [ "-1year", "1 year" ]
