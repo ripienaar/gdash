@@ -92,6 +92,17 @@ class GDash
             erb :dashboard
         end
 
+        get '/:category/:dash/*/*' do
+            @key = params[:splat][0]
+            @value = params[:splat][1]
+            if @top_level["#{params[:category]}"].list.include?(params[:dash])
+                @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+            else
+                @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
+            end
+            erb :dashboard
+	end
+
         helpers do
             include Rack::Utils
 
