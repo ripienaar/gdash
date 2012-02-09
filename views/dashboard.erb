@@ -3,6 +3,36 @@
 
 <div class="row">
 <table class="table table-bordered">
+<tr><td>
+<div class="btn-group">
+  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    Time Range
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+	<% baseurl = @params[:category] + "/" + @params[:dash] + "/" %>
+      <li>
+        <a href="/<%=baseurl%>from/-1hour">1 hour</a>
+      </li>
+      <li>
+        <a href="/<%=baseurl%>from/-8hour">8 hours</a>
+      </li>
+      <li>
+        <a href="/<%=baseurl%>from/-1day">1 day</a>
+      </li>
+      <li>
+        <a href="/<%=baseurl%>from/-3day">3 days</a>
+      </li>
+      <li>
+        <a href="/<%=baseurl%>from/-7day">1 week</a>
+      </li>
+      <li>
+        <a href="/<%=baseurl%>from/-1month">1 month</a>
+      </li>
+  </ul>
+</div>
+</tr></td>
+
     <% row = 1 %>
     <% @dashboard.graphs.in_groups_of(@graph_columns) do |graphs| %>
 
@@ -10,6 +40,7 @@
         <% graphs.each do |graph| %>
             <td>
             <% if graph %>
+                <% graph[:graphite][@key] = @value unless @key.nil? %>
                 <% if graph[:graphite][:description] %>
                     <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" data-original-title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>">
                 <% else %>
