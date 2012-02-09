@@ -3,16 +3,19 @@
 <div class="row">
     <table>
     <% row = 1 %>
-    <% @dashboard.graphs.in_groups_of(@graph_columns) do |graphs| %>
-
+    <% grouped_graphs = @dashboard.graphs.in_groups_of(@graph_columns) %>
+    <% grouped_graphs.each do |graphs| %>
         <tr>
         <% graphs.each do |graph| %>
+            <% i = grouped_graphs.rindex(graphs) * @graph_columns + graphs.rindex(graph) %>
             <td>
             <% if graph %>
                 <% if graph[:graphite][:description] %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>">
+                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
+                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
                 <% else %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'>
+                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
+                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'></a>
                 <% end %>
             <% end %>
             </td>
@@ -28,18 +31,12 @@
         .popover({
           placement: "above", delayIn: 1000
         })
-        .click(function(e) {
-          e.preventDefault()
-        })
     })
 
     $(function () {
       $("img[rel=popover-below]")
         .popover({
           placement: "below", delayIn: 1000
-        })
-        .click(function(e) {
-          e.preventDefault()
         })
     })
 </script>
