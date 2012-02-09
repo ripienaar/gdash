@@ -3,9 +3,11 @@
 <div class="row">
     <table>
     <% row = 1 %>
-    <% @dashboard.graphs.in_groups_of(@graph_columns) do |graphs| %>
+    <% grouped_graphs = @dashboard.graphs.in_groups_of(@graph_columns) %>
+    <% grouped_graphs.each do |graphs| %>
         <tr>
-        <% graphs.each_with_index do |graph,i| %>
+        <% graphs.each do |graph| %>
+            <% i = grouped_graphs.rindex(graphs) * @graph_columns + graphs.rindex(graph) %>
             <td>
             <% if graph %>
                 <% if graph[:graphite][:description] %>
@@ -29,18 +31,12 @@
         .popover({
           placement: "above", delayIn: 1000
         })
-        .click(function(e) {
-          e.preventDefault()
-        })
     })
 
     $(function () {
       $("img[rel=popover-below]")
         .popover({
           placement: "below", delayIn: 1000
-        })
-        .click(function(e) {
-          e.preventDefault()
         })
     })
 </script>
