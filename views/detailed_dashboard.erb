@@ -3,9 +3,10 @@
 <h2><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <div class="row">
     <table>
-        <% @graphs.each do |graph| %>
-          <% row = 1 %>
+        <% row = 1 %>
+        <% @graphs.in_groups_of(@graph_columns) do |graphrows| %>
           <tr>
+          <% graphrows.each do |graph| %>
             <td>
             <% if graph %>
                 <% if graph[:description] %>
@@ -15,6 +16,7 @@
                 <% end %>
             <% end %>
             </td>
+          <% end %>
 	  </tr>
           <% row += 1 %>
         <% end %>
