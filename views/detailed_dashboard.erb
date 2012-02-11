@@ -1,6 +1,5 @@
 <% unless @error %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
-<h2><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <div class="row">
     <table>
         <% row = 1 %>
@@ -10,7 +9,7 @@
             <td>
             <% if graph %>
                 <% if graph[:description] %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>' rel="<% row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
+                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
                 <% else %>
                     <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>'>
                 <% end %>
