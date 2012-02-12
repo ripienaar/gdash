@@ -77,6 +77,24 @@ over at https://github.com/ripienaar/graphite-graph-dsl/wiki
 
 At the moment we do not support the _Related Items_ feature of the DSL.
 
+Time Intervals Display?
+-----------------------
+
+If you configure time intervals in the config file you can click on any graph in
+the main dashboard view and get a view with different time intervals of the same
+graph
+
+	:options:
+	  :intervals:
+	    - [ "-1hour", "1 hour" ]
+	    - [ "-2hour", "2 hour" ]
+	    - [ "-1day", "1 day" ]
+	    - [ "-1month", "1 month" ]
+	    - [ "-1year", "1 year" ]
+
+With this in place in the _config.yaml_ clicking on a graph will show the 5 intervals
+defined above of that graph
+
 Full Screen Displays?
 ---------------------
 

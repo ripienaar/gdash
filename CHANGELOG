@@ -1,3 +1,4 @@
+2012/02/11 - Support time interval views for any graph
 2011/11/12 - Include the uncompiled less files and a js script to compile on demand
              making it easier to customize the look and feel of gdash - thanks Joe Miller
 2011/10/18 - Multiple top level categories are supported
