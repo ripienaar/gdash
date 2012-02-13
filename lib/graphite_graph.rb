@@ -291,7 +291,11 @@ class GraphiteGraph
 
         unless target.include?(:subgroup)
           if target[:alias]
-            graphite_target = "alias(#{graphite_target},\"#{target[:alias]}\")"
+            if target[:alias] == "none"
+            	graphite_target = graphite_target
+            else
+            	graphite_target = "alias(#{graphite_target},\"#{target[:alias]}\")"
+             end
           else
             graphite_target = "alias(#{graphite_target},\"#{name.to_s.capitalize}\")"
           end
