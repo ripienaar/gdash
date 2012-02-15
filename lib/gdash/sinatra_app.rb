@@ -23,13 +23,16 @@ class GDash
       @graph_columns = options.delete(:graph_columns) || 2
 
       # how wide each graph should be
-      @graph_width = options.delete(:graph_width) || 500
+      @graph_width = options.delete(:graph_width)
 
       # how hight each graph sould be
-      @graph_height = options.delete(:graph_height) || 250
+      @graph_height = options.delete(:graph_height)
 
       # Dashboard title
       @dash_title = options.delete(:title) || "Graphite Dashboard"
+
+      # Time filters in interface
+      @interval_filters = options.delete(:interval_filters) || Array.new
 
       @intervals = options.delete(:intervals) || []
 
@@ -37,7 +40,7 @@ class GDash
       Dir.entries(@graph_templates).each do |category|
         if File.directory?("#{@graph_templates}/#{category}")
           unless ("#{category}" =~ /^\./ )
-            @top_level["#{category}"] = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/#{category}"), @graph_width, @graph_height)
+            @top_level["#{category}"] = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/#{category}"), {:width => @graph_width, :height => @graph_height})
           end
         end
       end
@@ -86,21 +89,23 @@ class GDash
     end
 
     get '/:category/:dash/full/?*' do
+      options = {}
       params["splat"] = params["splat"].first.split("/")
 
       params["columns"] = params["splat"][0].to_i || @graph_columns
 
       if params["splat"].size == 3
-        width = params["splat"][1].to_i
-        height = params["splat"][2].to_i
+        options[:width] = params["splat"][1].to_i
+        options[:height] = params["splat"][2].to_i
       else
-        width = @graph_width
-        height = @graph_height
+        options[:width] = @graph_width
+        options[:height] = @graph_height
       end
 
+      options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash], width, height)
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
       end
@@ -108,9 +113,20 @@ class GDash
       erb :full_size_dashboard, :layout => false
     end
 
-    get '/:category/:dash/' do
+    get '/:category/:dash/?*' do
+      options = {}
+      params["splat"] = params["splat"].first.split("/")
+
+      case params["splat"][0]
+        when 'time'
+          options[:from] = params["splat"][1] || "-1hour"
+          options[:until] = params["splat"][2] || "now"
+        end
+
+      options.merge!(query_params)
+
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
@@ -122,6 +138,21 @@ class GDash
       include Rack::Utils
 
       alias_method :h, :escape_html
+
+      def link_to_interval(options)
+        "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/') }\">#{ h(options[:label]) }</a>"
+      end
+
+      def query_params
+        hash = {}
+        protected_keys = [:category, :dash, :splat]
+
+        params.each do |k, v|
+          hash[k.to_sym] = v unless protected_keys.include?(k.to_sym)
+        end
+
+        hash
+      end
     end
   end
 end
