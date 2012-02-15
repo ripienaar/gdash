@@ -18,7 +18,7 @@
                     <div class="container">
                         <h3><a href="<%= @prefix %>/"><%= @dash_title %></a></h3>
                         <ul class="nav">
-                        <% @top_level.each_key do |category| %>
+                        <% @top_level.keys.sort.each do |category| %>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle"><%= category.capitalize %></a>
                                 <ul class="dropdown-menu">
