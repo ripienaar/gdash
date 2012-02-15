@@ -1,5 +1,6 @@
 <% unless @error %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+<%= erb :_interval_filter, :layout => false unless @interval_filters.empty? %>
 <div class="row">
     <table>
     <% row = 1 %>
