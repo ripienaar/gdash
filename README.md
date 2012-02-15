@@ -115,8 +115,8 @@ structure:
 
 or
 
-    http://gdash.example.com/dashboard/email/?from=-8d&to=-7d
-    http://gdash.example.com/dashboard/email/full/2/600/300?from=-8d&to=-7d
+    http://gdash.example.com/dashboard/email/?from=-8d&until=-7d
+    http://gdash.example.com/dashboard/email/full/2/600/300?from=-8d&until=-7d
 
 This will display the _email_ dashboard with a time interval same day last week.
 If you hit */dashboard/email/time/* it will default to the past hour (*-1hour*)
