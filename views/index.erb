@@ -1,5 +1,5 @@
 <% unless @error %>
-<%   @top_level.each do |key, value| %>
+<%   @top_level.keys.sort.each do |key| %>
 <h2> <%= key.capitalize %> </h2>
 <table>
     <thead>
