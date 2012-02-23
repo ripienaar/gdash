@@ -32,6 +32,7 @@ and additional options:
     * The width of the graphs, 500 by default
     * The height of the graphs, 250 by default
     * Where your whisper files are stored - future use
+    * Optional interval quick filters
 
 Creating Dashboards?
 --------------------
@@ -77,6 +78,39 @@ over at https://github.com/ripienaar/graphite-graph-dsl/wiki
 
 At the moment we do not support the _Related Items_ feature of the DSL.
 
+Custom Time Intervals?
+--------------------
+
+You can reuse your dashboards and adjust the time interval by using the following url
+structure:
+
+    http://gdash.example.com/dashboard/email/time/-8d/-7d
+
+or
+
+    http://gdash.example.com/dashboard/email/?from=-8d&until=-7d
+    http://gdash.example.com/dashboard/email/full/2/600/300?from=-8d&until=-7d
+
+This will display the _email_ dashboard with a time interval same day last week.
+If you hit */dashboard/email/time/* it will default to the past hour (*-1hour*)
+See http://graphite.readthedocs.org/en/1.0/url-api.html#from-until for more info 
+acceptable *from* and *until* values.
+
+Quick interval filters shown in interface are configurable in _gdash.yaml_ options sections. Eg:
+
+	:options:
+      :interval_filters:
+        - :label: Last Hour
+          :from: -1h
+          :to: now
+        - :label: Last Day
+          :from: -1day
+        - :label: Current Week
+          :from: monday
+          :to: now
+
+Quick filter is not shown when *interval_filters* section is missing in configuration file.
+
 Time Intervals Display?
 -----------------------
 
@@ -102,6 +136,7 @@ You can reuse your dashboards for big displays against a wall in your NOC or off
 by using the following url structure:
 
     http://gdash.example.com/dashboard/email/full/4/600/300
+    http://gdash.example.com/dashboard/email/full/4?width=600&height=300
 
 This will display the _email_ dashboard in _4_ columns each graph with a width of
 _600_ and a height of _300_
