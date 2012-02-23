@@ -281,7 +281,7 @@ class GraphiteGraph
         graphite_target = target[:data]
 
         graphite_target = "derivative(#{graphite_target})" if target[:derivative]
-        graphite_target = "highestAverage(#{graphite_target}),#{target[:highestAverage]})" if target[:highestAverage]
+        graphite_target = "highestAverage(#{graphite_target},#{target[:highestAverage]})" if target[:highestAverage]
         graphite_target = "scale(#{graphite_target},#{target[:scale]})" if target[:scale]
         graphite_target = "drawAsInfinite(#{graphite_target})" if target[:line]
         graphite_target = "movingAverage(#{graphite_target},#{target[:smoothing]})" if target[:smoothing]
