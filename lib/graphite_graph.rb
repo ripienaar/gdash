@@ -281,6 +281,7 @@ class GraphiteGraph
         graphite_target = target[:data]
 
         graphite_target = "derivative(#{graphite_target})" if target[:derivative]
+        graphite_target = "highestAverage(#{graphite_target}),#{target[:highestAverage]})" if target[:highestAverage]
         graphite_target = "scale(#{graphite_target},#{target[:scale]})" if target[:scale]
         graphite_target = "drawAsInfinite(#{graphite_target})" if target[:line]
         graphite_target = "movingAverage(#{graphite_target},#{target[:smoothing]})" if target[:smoothing]
@@ -290,7 +291,9 @@ class GraphiteGraph
         graphite_target = "secondYAxis(#{graphite_target})" if target[:second_y_axis]
 
         unless target.include?(:subgroup)
-          if target[:alias]
+          if target[:aliasByNode]
+            graphite_target = "aliasByNode(#{graphite_target},#{target[:aliasByNode]})"
+          elsif target[:alias]
             graphite_target = "alias(#{graphite_target},\"#{target[:alias]}\")"
           else
             graphite_target = "alias(#{graphite_target},\"#{name.to_s.capitalize}\")"
