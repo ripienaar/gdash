@@ -276,7 +276,7 @@ class GraphiteGraph
           graphite_target = "alias(#{graphite_target},\"#{name.to_s.capitalize}\")"
         end
 
-	graphite_target = "legendValue(#{graphite_target},\"#{target[:legend_value]}\")" if target[:legend_value]
+      	graphite_target = "legendValue(#{graphite_target},\"#{target[:legend_value]}\")" if target[:legend_value]
 
         url_parts << "target=#{graphite_target}"
       end
