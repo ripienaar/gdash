@@ -25,7 +25,7 @@ class GDash
       graphs = Dir.entries(directory).select{|f| f.match(/\.graph$/)}
 
       graphs.sort.map do |graph|
-        {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), {:height => height, :width => width})}
+        {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), {:height => height, :width => width}, {}, @properties[:graph_properties])}
       end
     end
 
