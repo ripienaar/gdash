@@ -134,6 +134,10 @@ class GDash
       erb :dashboard
     end
 
+    get '/docs/' do
+      markdown :README, :layout_engine => :erb
+    end
+
     helpers do
       include Rack::Utils
 
