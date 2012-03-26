@@ -64,6 +64,22 @@ class GDash
       erb :index
     end
 
+    get '/:category/:dash/redirect/:name' do
+      if @top_level["#{params[:category]}"].list.include?(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+      else
+        @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
+      end
+
+      if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
+        graph = GraphiteGraph.new(main_graph.file, main_graph.properties)
+      else
+        @error = "No such graph available"
+      end
+
+      redirect [@top_level[@params[:category]].graphite_render, graph[:url]].join "?"
+    end
+
     get '/:category/:dash/details/:name' do
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
