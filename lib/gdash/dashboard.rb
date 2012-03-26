@@ -25,6 +25,28 @@ class GDash
       @properties[:graph_until] = options.delete(:until) || graph_until
     end
 
+    def graphs_named(options={})
+      options[:width] ||= graph_width
+      options[:height] ||= graph_height
+      options[:from] ||= graph_from
+      options[:until] ||= graph_until
+
+      graphs = Dir.entries(directory).select{|f| f.match(/\.graph$/)}
+
+      overrides = options.reject { |k,v| v.nil? }
+
+      graphs_named = Hash.new
+      graphs.each do |graph|
+	name = File.basename(graph, ".graph")
+	graphs_named[name] = {
+		:name => name,
+		:graphite => GraphiteGraph.new(File.join(directory, graph), overrides)
+	}
+      end
+
+      graphs_named
+    end
+
     def graphs(options={})
       options[:width] ||= graph_width
       options[:height] ||= graph_height

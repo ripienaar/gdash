@@ -71,7 +71,7 @@ class GDash
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
 
-      if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
+      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
         graph = GraphiteGraph.new(main_graph.file, main_graph.properties)
       else
         @error = "No such graph available"
@@ -91,7 +91,7 @@ class GDash
         @error = "No intervals defined in configuration"
       end
 
-      if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
+      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
         @graphs = @intervals.map do |e|
           new_props = {:from => e[0], :title => "#{main_graph.properties[:title]} - #{e[1]}"}
           new_props = main_graph.properties.merge new_props
