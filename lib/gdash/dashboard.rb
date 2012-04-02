@@ -42,6 +42,21 @@ class GDash
       options[:height] ||= graph_height
       options[:from] ||= graph_from
       options[:until] ||= graph_until
+        
+      if @properties[:include] == nil || @properties[:include].empty?
+        includes = []
+      elsif @properties[:include].is_a? Array
+        includes = @properties[:include]
+      elsif @properties[:include].is_a? String
+        includes = [@properties[:include]]
+      else
+        raise "Invalid value from includes"
+      end
+
+      directories = includes.map { |d|
+        File.join(directory, '..', '..', d)
+      }
+      directories << directory
 
       graphs = list_graphs(directories)
 
@@ -49,11 +64,7 @@ class GDash
 
       graphs.keys.sort.map do |graph_name|
         {:name => graph_name, 
-         :graphite => GraphiteGraph.new(graphs[graph_name], 
-                      {:height => height, :width => width}, 
-                       overrides, 
-                       @properties[:graph_properties])}
-                       
+         :graphite => GraphiteGraph.new(graphs[graph_name], overrides, {}, @properties[:graph_properties])}
       end
     end
 
