@@ -1,13 +1,14 @@
 What?
 =====
 
-A simple Graphite dashboard built using Twitters Bootstrap.
+A simple Graphite dashboard built using Twitter's Bootstrap.
 
-Adding new dashboards is very easy and individual graphs is
+Adding new dashboards is very easy and individual graphs are
 described using a small DSL.
 
-See the _sample_ directory for an example dashboard including
-a screenshot.
+See the _sample_ directory for a sample dashboard configuration.
+
+![Sample dashboard](https://github.com/ripienaar/gdash/raw/master/sample/email.png)
 
 Config?
 -------
