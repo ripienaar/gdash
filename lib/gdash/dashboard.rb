@@ -25,18 +25,46 @@ class GDash
       @properties[:graph_until] = options.delete(:until) || graph_until
     end
 
+    def list_graphs(directories)
+      graphs = {}
+      directories.each { |directory|
+        current_graphs = Dir.entries(directory).select {|f| f.match(/\.graph$/)}
+        current_graphs.each { |graph_filename|  
+          graph_name = File.basename(graph_filename, ".graph")
+          graphs[graph_name] = File.join(directory, graph_filename) 
+        }
+      }
+      graphs
+    end
+
     def graphs(options={})
       options[:width] ||= graph_width
       options[:height] ||= graph_height
       options[:from] ||= graph_from
       options[:until] ||= graph_until
+        
+      if @properties[:include] == nil || @properties[:include].empty?
+        includes = []
+      elsif @properties[:include].is_a? Array
+        includes = @properties[:include]
+      elsif @properties[:include].is_a? String
+        includes = [@properties[:include]]
+      else
+        raise "Invalid value from includes"
+      end
 
-      graphs = Dir.entries(directory).select{|f| f.match(/\.graph$/)}
+      directories = includes.map { |d|
+        File.join(directory, '..', '..', d)
+      }
+      directories << directory
+
+      graphs = list_graphs(directories)
 
       overrides = options.reject { |k,v| v.nil? }
 
-      graphs.sort.map do |graph|
-        {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), overrides)}
+      graphs.keys.sort.map do |graph_name|
+        {:name => graph_name, 
+         :graphite => GraphiteGraph.new(graphs[graph_name], overrides, {}, @properties[:graph_properties])}
       end
     end
 

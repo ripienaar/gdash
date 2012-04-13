@@ -3,13 +3,14 @@ require 'uri'
 # see https://github.com/ripienaar/graphite-graph-dsl/wiki
 # for full details
 class GraphiteGraph
-  attr_reader :info, :properties, :targets, :target_order, :critical_threshold, :warning_threshold
+  attr_reader :info, :properties, :targets, :target_order, :critical_threshold, :warning_threshold, :overrides
 
-  def initialize(file, overrides={}, info={})
+  def initialize(file, overrides={}, info={}, graph_properties={})
     @info = info
     @file = file
     @munin_mode = false
     @overrides = overrides
+    @graph_properties = graph_properties || {}
     @linecount = 0
 
     @critical_threshold = []
@@ -41,7 +42,7 @@ class GraphiteGraph
                    :minor_grid_line_color => nil,
                    :area => :none}.merge(@overrides)
   end
-
+  
   def [](key)
     if key == :url
       url
@@ -51,11 +52,22 @@ class GraphiteGraph
   end
 
   def method_missing(meth, *args)
-    if properties.include?(meth)
+    if @graph_properties.include?(meth)
+      @graph_properties[meth]
+    elsif properties.include?(meth)
       properties[meth] = args.first unless @overrides.include?(meth)
     else
       super
     end
+  end
+
+  def clone_new_interval(interval_definition)
+    new_graph = clone
+    new_graph.overrides.merge!({
+      :from => interval_definition[0],
+      :title => "#{@properties[:title]} - #{interval_definition[1]}"})
+    new_graph.load_graph # 
+    new_graph
   end
 
   def load_graph

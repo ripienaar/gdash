@@ -77,9 +77,7 @@ class GDash
 
       if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
         @graphs = @intervals.map do |e|
-          new_props = {:from => e[0], :title => "#{main_graph.properties[:title]} - #{e[1]}"}
-          new_props = main_graph.properties.merge new_props
-          GraphiteGraph.new(main_graph.file, new_props)
+          new_graph = main_graph.clone_new_interval(e)
         end
       else
         @error = "No such graph available"
