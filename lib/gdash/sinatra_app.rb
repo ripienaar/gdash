@@ -137,8 +137,7 @@ class GDash
       erb :dashboard
     end
 
-				get '/:category/:dash/:name/?:from?/?:width?/?:height?/?:template?' do
-			puts params[:name].inspect
+		get '/:category/:dash/:name/?:from?/?:width?/?:height?/?:template?' do
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
       else
