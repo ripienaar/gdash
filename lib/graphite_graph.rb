@@ -252,7 +252,7 @@ class GraphiteGraph
     url_parts = []
     colors = []
 
-    [:title, :vtitle, :from, :width, :height, :until].each do |item|
+    [:title, :vtitle, :from, :width, :height, :until, :template].each do |item|
       url_parts << "#{item}=#{properties[item]}" if properties[item]
     end
 

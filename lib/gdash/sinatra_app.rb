@@ -64,22 +64,6 @@ class GDash
       erb :index
     end
 
-    get '/:category/:dash/redirect/:name' do
-      if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
-      else
-        @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
-      end
-
-      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
-        graph = GraphiteGraph.new(main_graph.file, main_graph.properties)
-      else
-        @error = "No such graph available"
-      end
-
-      redirect [@top_level[@params[:category]].graphite_render, graph[:url]].join "?"
-    end
-
     get '/:category/:dash/details/:name' do
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
@@ -133,11 +117,14 @@ class GDash
       options = {}
       params["splat"] = params["splat"].first.split("/")
 
-      case params["splat"][0]
-        when 'time'
-          options[:from] = params["splat"][1] || "-1hour"
+			if params["splat"].length > 0
+				if params["splat"][0] == 'time'
+					options[:from] = params["splat"][1] || "-1hour"
           options[:until] = params["splat"][2] || "now"
-        end
+				else
+					pass
+				end
+      end
 
       options.merge!(query_params)
 
@@ -148,6 +135,33 @@ class GDash
       end
 
       erb :dashboard
+    end
+
+				get '/:category/:dash/:name/?:from?/?:width?/?:height?/?:template?' do
+			puts params[:name].inspect
+      if @top_level["#{params[:category]}"].list.include?(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+      else
+        @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
+      end
+
+      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
+				overrides = {}
+				overrides[:width] = @params[:width] || 800
+				overrides[:height] = @params[:height] || 400
+				overrides[:template] = @params[:template] if @params[:template]
+				overrides[:from] = @params[:from] if @params[:from]
+
+				graph = GraphiteGraph.new(main_graph.file, overrides)
+				url = [@top_level[@params[:category]].graphite_render, graph[:url]].join "?"
+
+				require 'net/http'
+				content_type 'image/png'
+				headers "Direct-Link" => url
+				Net::HTTP.get_response(URI.parse(url)).body
+      else
+        @error = "No such graph available"
+      end
     end
 
     helpers do

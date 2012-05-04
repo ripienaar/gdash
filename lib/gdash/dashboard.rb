@@ -6,9 +6,9 @@ class GDash
       raise "Cannot find dashboard directory #{dir}" unless File.directory?(dir)
 
       @properties = {:graph_width => nil,
-                     :graph_height => nil,
-                     :graph_from => nil,
-                     :graph_until => nil}
+				:graph_height => nil,
+				:graph_from => nil,
+				:graph_until => nil}
 
       @properties[:short_name] = short_name
       @properties[:directory] = File.join(dir, short_name)
@@ -37,11 +37,11 @@ class GDash
 
       graphs_named = Hash.new
       graphs.each do |graph|
-	name = File.basename(graph, ".graph")
-	graphs_named[name] = {
-		:name => name,
-		:graphite => GraphiteGraph.new(File.join(directory, graph), overrides)
-	}
+				name = File.basename(graph, ".graph")
+				graphs_named[name] = {
+					:name => name,
+					:graphite => GraphiteGraph.new(File.join(directory, graph), overrides)
+				}
       end
 
       graphs_named

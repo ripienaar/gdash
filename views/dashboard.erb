@@ -18,6 +18,7 @@
                     <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
                     <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'></a>
                 <% end %>
+			  <a href='<%= [@prefix, params[:category], @params[:dash], graph[:name]].join "/" %>'>Link via GDash</a>
             <% end %>
             </td>
         <% end %>
