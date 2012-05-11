@@ -85,21 +85,21 @@ Template Directory Layout?
 The directory layout is such that you can have many groupins of dashboards each with
 many dashboards underneath it, an example layout of your templates dir would be:
 
-	graph_templates
-	`-- virtualization
-	    |-- dom0
-	    |   |-- dash.yaml
-	    |   |-- iowait.graph
-	    |   |-- load.graph
-	    |   |-- system.graph
-	    |   |-- threads.graph
-	    |   `-- user.graph
-	    `-- kvm1
-		|-- dash.yaml
-		|-- disk_read.graph
-		|-- disk_write.graph
-		|-- ssd_read.graph
-		`-- ssd_write.graph
+        graph_templates
+        `-- virtualization
+            |-- dom0
+            |   |-- dash.yaml
+            |   |-- iowait.graph
+            |   |-- load.graph
+            |   |-- system.graph
+            |   |-- threads.graph
+            |   `-- user.graph
+            `-- kvm1
+                |-- dash.yaml
+                |-- disk_read.graph
+                |-- disk_write.graph
+                |-- ssd_read.graph
+                `-- ssd_write.graph
 
 Here we have a group of dashboards called 'virtualization' with 2 dashboards inside it
 each with numerous graphs.
