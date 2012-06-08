@@ -1,7 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    graphite_graph (0.0.1)
+    graphite_graph (0.0.3)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
