@@ -51,6 +51,6 @@ class GDash
       end
     end
 
-    dashboards.sort_by{|d| d[:name]}
+    dashboards.sort_by{|d| d[:name].to_s}
   end
 end
