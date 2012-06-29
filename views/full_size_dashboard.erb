@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta http-equiv="refresh" content="60">
+    <script src="<%= @prefix %>/js/jquery-1.5.2.min.js"></script>
 </head>
 <% if @error %>
    <h2><%= @error %></h2>
@@ -19,6 +19,18 @@
         </tr>
     <% end %>
 </table>
+<script>
+    $(document).ready(function() {
+        setInterval(reloadDash, <%= @refresh_rate * 1000 %>);
+    });
+    function reloadDash() {
+        var now = new Date();
+        $('img').each(function(index) {
+            var url = $(this).attr('src').replace(/&\d+$/, '');
+            $(this).attr('src', url + '&' + now.getTime());
+        });
+    }
+</script>
 </body>
 <% end %>
 </html>
