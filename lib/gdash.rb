@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'sinatra'
+require 'sinatra/base'
 require 'yaml'
 require 'erb'
 require 'redcarpet'
