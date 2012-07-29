@@ -4,9 +4,7 @@
   <div class="span12">
     <ul class="thumbnails">
     <% @graphs.each do |graph| %>
-      <li class="graph span6">
-        <img class="thumbnail" src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>' title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
-      </li>
+      <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
     <% end %>
     </ul>
   </div>

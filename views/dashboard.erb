@@ -5,10 +5,7 @@
   <div class="span12">
     <ul class="thumbnails">
     <% @dashboard.graphs.each do |graph| %>
-      <li class="graph span6">
-        <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
-        <img class="thumbnail" src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
-      </li>
+      <%= erb(:graph, :locals => { :graph => graph }) %>
     <% end %>
     </ul>
   </div>
