@@ -8,14 +8,13 @@
     <% grouped_graphs.each do |graphs| %>
         <tr>
         <% graphs.each do |graph| %>
-            <% i = grouped_graphs.rindex(graphs) * @graph_columns + graphs.rindex(graph) %>
             <td>
             <% if graph %>
                 <% if graph[:graphite][:description] %>
-                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
+                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
                     <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
                 <% else %>
-                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
+                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
                     <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'></a>
                 <% end %>
             <% end %>
