@@ -2,37 +2,20 @@
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <%= erb :_interval_filter, :layout => false unless @interval_filters.empty? %>
 <div class="row">
-    <table class="table">
-    <% row = 1 %>
-    <% grouped_graphs = @dashboard.graphs.in_groups_of(@graph_columns) %>
-    <% grouped_graphs.each do |graphs| %>
-        <tr>
-        <% graphs.each do |graph| %>
-            <td>
-            <% if graph %>
-                <% if graph[:graphite][:description] %>
-                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
-                <% else %>
-                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'></a>
-                <% end %>
-            <% end %>
-            </td>
-        <% end %>
-        </tr>
-    <% row += 1 %>
+  <div class="span12">
+    <ul class="thumbnails">
+    <% @dashboard.graphs.each do |graph| %>
+      <li class="graph span6">
+        <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
+        <img class="thumbnail" src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
+      </li>
     <% end %>
-    </table>
+    </ul>
+  </div>
 </div>
 <script>
     $(function () {
-      $("img[rel=popover-above]")
-        .popover({
-          placement: "top", delay: 1000
-        })
-
-      $("img[rel=popover-below]")
+      $(".graph img")
         .popover({
           placement: "bottom", delay: 1000
         })

@@ -1,34 +1,19 @@
 <% unless @error %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <div class="row">
-    <table class="table">
-        <% row = 1 %>
-        <% @graphs.in_groups_of(@graph_columns) do |graphrows| %>
-          <tr>
-          <% graphrows.each do |graph| %>
-            <td>
-            <% if graph %>
-                <% if graph[:description] %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
-                <% else %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>'>
-                <% end %>
-            <% end %>
-            </td>
-          <% end %>
-	  </tr>
-          <% row += 1 %>
-        <% end %>
-    </table>
+  <div class="span12">
+    <ul class="thumbnails">
+    <% @graphs.each do |graph| %>
+      <li class="graph span6">
+        <img class="thumbnail" src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>' title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
+      </li>
+    <% end %>
+    </ul>
+  </div>
 </div>
 <script>
     $(function () {
-      $("img[rel=popover-above]")
-        .popover({
-          placement: "top", delay: 1000
-        })
-
-      $("img[rel=popover-below]")
+      $(".graph img")
         .popover({
           placement: "bottom", delay: 1000
         })
