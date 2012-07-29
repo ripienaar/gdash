@@ -3,6 +3,7 @@ require 'sinatra'
 require 'yaml'
 require 'erb'
 require 'redcarpet'
+require 'less'
 
 class GDash
   require 'gdash/dashboard'

@@ -64,6 +64,11 @@ class GDash
       erb :index
     end
 
+    Less.paths << File.join(settings.views, 'bootstrap')
+    get "/bootstrap/:name.css" do
+      less :"bootstrap/#{params[:name]}", :paths => ["views/bootstrap"]
+    end
+
     get '/:category/:dash/details/:name' do
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash])

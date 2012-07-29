@@ -1,7 +1,7 @@
 <% unless @error %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <div class="row">
-    <table>
+    <table class="table">
         <% row = 1 %>
         <% @graphs.in_groups_of(@graph_columns) do |graphrows| %>
           <tr>
@@ -25,20 +25,12 @@
     $(function () {
       $("img[rel=popover-above]")
         .popover({
-          placement: "above", delayIn: 1000
+          placement: "top", delay: 1000
         })
-        .click(function(e) {
-          e.preventDefault()
-        })
-    })
 
-    $(function () {
       $("img[rel=popover-below]")
         .popover({
-          placement: "below", delayIn: 1000
-        })
-        .click(function(e) {
-          e.preventDefault()
+          placement: "bottom", delay: 1000
         })
     })
 </script>

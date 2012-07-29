@@ -2,7 +2,7 @@
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <%= erb :_interval_filter, :layout => false unless @interval_filters.empty? %>
 <div class="row">
-    <table>
+    <table class="table">
     <% row = 1 %>
     <% grouped_graphs = @dashboard.graphs.in_groups_of(@graph_columns) %>
     <% grouped_graphs.each do |graphs| %>
@@ -30,14 +30,12 @@
     $(function () {
       $("img[rel=popover-above]")
         .popover({
-          placement: "above", delayIn: 1000
+          placement: "top", delay: 1000
         })
-    })
 
-    $(function () {
       $("img[rel=popover-below]")
         .popover({
-          placement: "below", delayIn: 1000
+          placement: "bottom", delay: 1000
         })
     })
 </script>
