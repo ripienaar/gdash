@@ -1,0 +1,10 @@
+<% omit_link ||= false %>
+<li class="graph span<%=12/@graph_columns%>">
+  <% unless omit_link %>
+    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
+  <% end %>
+  <img class="thumbnail" src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>">
+  <% unless omit_link %>
+    </a>
+  <% end %>
+</li>

@@ -1,25 +1,24 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <link rel="stylesheet/less" type="text/css" href="<%= @prefix %>/lib/bootstrap.less">
-        <script src="<%= @prefix %>/js/less-1.1.3.min.js" type="text/javascript"></script>
-        <script src="<%= @prefix %>/js/jquery-1.5.2.min.js"></script>
-        <script src="<%= @prefix %>/js/jquery.tablesorter.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
+        <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-twipsy.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-scrollspy.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-dropdown.js"></script>
+        <script src="<%= @prefix %>/js/bootstrap-tooltip.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-popover.js"></script>
         <title><%= @dash_title %></title>
     </head>
-    <body style="padding-top: 80px;">
-        <div class="topbar-wrapper" style="z-index: 5;">
-            <div class="topbar" data-dropdown="dropdown" >
-                <div class="topbar-inner">
+    <body>
+        <div class="navbar">
+                <div class="navbar-inner">
                     <div class="container">
-                        <h3><a href="<%= @prefix %>/"><%= @dash_title %></a></h3>
+                        <a class="brand" href="<%= @prefix %>/"><%= @dash_title %></a>
                         <ul class="nav">
                         <% @top_level.keys.sort.each do |category| %>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle"><%= category.capitalize %></a>
+                          <li class="dropdown" id="menu-<%= category %>">
+                                <a href="#" data-toggle="dropdown" href="#menu-<%= category %>" class="dropdown-toggle"><%= category.capitalize %> <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                 <% @top_level[category].dashboards.sort_by{|b| b[:name].to_s}.each do |board| %>
                                     <li><a href="<%= [@prefix, category, board[:link]].join('/') %>/"><%= board[:name] %></a></li>
@@ -28,11 +27,10 @@
                             </li>
                         <% end %>
                         </ul>
-                        <ul class="nav secondary-nav">
+                        <ul class="nav pull-right">
                             <li><a href="<%= @graphite_base %>">Data Browser</a></li>
                             <li><a href="<%= @prefix %>/docs/">Docs</a></li>
                         </ul>
-                    </div>
                 </div>
             </div>
         </div>
@@ -49,6 +47,7 @@
             <h6 id="updated"></h6>
         </div>
         <script>
+              $('.dropdown-toggle').dropdown()
             $(document).ready(function() {
                 var now = new Date();
                 $('#updated').text('Updated ' + now.toLocaleString())
