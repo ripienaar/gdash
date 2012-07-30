@@ -1,5 +1,5 @@
 <% omit_link ||= false %>
-<li class="graph span6">
+<li class="graph span<%=12/@graph_columns%>">
   <% unless omit_link %>
     <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name]].join "/" %>'>
   <% end %>
