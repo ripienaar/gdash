@@ -171,6 +171,26 @@ _600_ and a height of _300_
 
 The screen will refresh every minute
 
+Additional properties in graphs?
+--------------------------------
+
+You can specify additional properties in the dash.yaml:
+
+    :graph_properties:
+        :environment: dev
+        :server: [ a_server_name ]
+        :javaid: 1234
+    
+that can be accessed from the .graph like:
+    
+    server = @properties[:server]
+    environment = @properties[:environment]
+    
+    field :iowait, 
+        :alias => "IO Wait #{server}",
+        :data  => "servers.#{environment}.#{server}.cpu*.cpu-{system,wait}.value"
+
+
 Contact?
 --------
 
