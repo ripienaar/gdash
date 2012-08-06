@@ -34,6 +34,7 @@ class GDash
       graphs = Dir.entries(directory).select{|f| f.match(/\.graph$/)}
 
       overrides = options.reject { |k,v| v.nil? }
+      overrides = overrides.merge!(@properties[:graph_properties])
 
       graphs.sort.map do |graph|
         {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), overrides)}
