@@ -190,6 +190,15 @@ that can be accessed from the .graph like:
         :alias => "IO Wait #{server}",
         :data  => "servers.#{environment}.#{server}.cpu*.cpu-{system,wait}.value"
 
+Include graphs from other dashboard?
+------------------------------------
+
+You can include the graphs from other dashboard with the include 
+property in dash.yaml:
+
+    :include: 
+    - "templates/os.basic" 
+    - "templates/os.nfs" 
 
 Contact?
 --------
