@@ -2,17 +2,20 @@ class GDash
   class Dashboard
     attr_accessor :properties
 
-    def initialize(short_name, dir, options={})
-      raise "Cannot find dashboard directory #{dir}" unless File.directory?(dir)
-
+    def initialize(short_name, graph_templates, category, options={})
       @properties = {:graph_width => nil,
                      :graph_height => nil,
                      :graph_from => nil,
                      :graph_until => nil}
 
       @properties[:short_name] = short_name
-      @properties[:directory] = File.join(dir, short_name)
-      @properties[:yaml] = File.join(dir, short_name, "dash.yaml")
+      @properties[:graph_templates] = graph_templates
+      @properties[:category] = category
+      @properties[:directory] = File.join(graph_templates, category, short_name)
+      
+      raise "Cannot find dashboard directory #{directory}" unless File.directory?(directory)
+      
+      @properties[:yaml] = File.join(directory, "dash.yaml")
 
       raise "Cannot find YAML file #{yaml}" unless File.exist?(yaml)
 
@@ -25,18 +28,47 @@ class GDash
       @properties[:graph_until] = options.delete(:until) || graph_until
     end
 
+    def list_graphs(directories)
+      graphs = {}
+      directories.each { |directory|
+        current_graphs = Dir.entries(directory).select {|f| f.match(/\.graph$/)}
+        current_graphs.each { |graph_filename|  
+          graph_name = File.basename(graph_filename, ".graph")
+          graphs[graph_name] = File.join(directory, graph_filename) 
+        }
+      }
+      graphs
+    end
+
     def graphs(options={})
       options[:width] ||= graph_width
       options[:height] ||= graph_height
       options[:from] ||= graph_from
       options[:until] ||= graph_until
 
-      graphs = Dir.entries(directory).select{|f| f.match(/\.graph$/)}
-
       overrides = options.reject { |k,v| v.nil? }
+      overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
 
-      graphs.sort.map do |graph|
-        {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), overrides)}
+      if @properties[:include] == nil || @properties[:include].empty?
+        includes = []
+      elsif @properties[:include].is_a? Array
+        includes = @properties[:include]
+      elsif @properties[:include].is_a? String
+        includes = [@properties[:include]]
+      else
+        raise "Invalid value for include in #{File.join(directory, 'graph.yaml')}"
+      end
+
+      directories = includes.map { |d|
+        File.join(graph_templates, d)
+      }
+      directories << directory
+
+      graphs = list_graphs(directories)
+
+      graphs.keys.sort.map do |graph_name|
+        {:name => graph_name, 
+         :graphite => GraphiteGraph.new(graphs[graph_name], overrides)}
       end
     end
 
