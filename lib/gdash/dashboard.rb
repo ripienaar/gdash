@@ -47,7 +47,7 @@ class GDash
       options[:until] ||= graph_until
 
       overrides = options.reject { |k,v| v.nil? }
-      overrides = overrides.merge!(@properties[:graph_properties])
+      overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
 
       if @properties[:include] == nil || @properties[:include].empty?
         includes = []
