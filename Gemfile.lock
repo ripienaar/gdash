@@ -1,12 +1,12 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    graphite_graph (0.0.4)
+    graphite_graph (0.0.6)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
     redcarpet (2.1.1)
-    sinatra (1.3.2)
+    sinatra (1.3.3)
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
       tilt (~> 1.3, >= 1.3.3)
@@ -16,6 +16,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  graphite_graph
+  graphite_graph (~> 0.0.6)
   redcarpet
   sinatra
