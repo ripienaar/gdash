@@ -30,7 +30,7 @@ class GDash
     options[:from] ||= @from
     options[:until] ||= @until
 
-    Dashboard.new(name, dash_templates, options)
+    Dashboard.new(@graphite_base, name, dash_templates, options)
   end
 
   def list
