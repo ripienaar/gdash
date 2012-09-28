@@ -9,6 +9,7 @@ class GDash
   require 'gdash/monkey_patches'
   require 'gdash/sinatra_app'
   require 'graphite_graph'
+  require 'graphite_graph_gen'
 
   attr_reader :graphite_base, :graphite_render, :dash_templates, :height, :width, :from, :until
 
