@@ -35,7 +35,7 @@ class GDash
       
       graph_generators = files_with_extension("graph_gen")
       graph_generators.each do |graph_generator|
-        GraphiteGraphGenerator.new(@graphite_base, @directory, graph_generator)
+        GraphiteGraphGenerator.new(@graphite_base, directory, graph_generator)
       end
 
       graphs = files_with_extension("graph")
