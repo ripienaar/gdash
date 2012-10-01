@@ -9,6 +9,7 @@ class GDash
   require 'gdash/monkey_patches'
   require 'gdash/sinatra_app'
   require 'graphite_graph'
+  require 'graphite_graph_gen'
 
   attr_reader :graphite_base, :graphite_render, :dash_templates, :height, :width, :from, :until
 
@@ -30,7 +31,7 @@ class GDash
     options[:from] ||= @from
     options[:until] ||= @until
 
-    Dashboard.new(name, dash_templates, options)
+    Dashboard.new(@graphite_base, name, dash_templates, options)
   end
 
   def list
