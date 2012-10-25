@@ -21,6 +21,23 @@ class GDash
 
       @properties.merge!(YAML.load_file(yaml))
 
+      if @properties[:include_properties] == nil || @properties[:include_properties].empty?
+        property_includes = []
+      elsif @properties[:include_properties].is_a? Array
+        property_includes = @properties[:include_properties]
+      elsif @properties[:include_properties].is_a? String
+        property_includes = [@properties[:include_properties]]
+      else
+        raise "Invalid value for include_properties in #{File.join(directory, 'dash.yaml')}"
+      end
+
+      for property_file in property_includes
+        yaml_file = File.join(graph_templates, property_file)
+        if File.exist?(yaml_file)
+          @properties.rmerge!(YAML.load_file(yaml_file))
+        end
+      end
+
       # Properties defined in dashboard config file are overridden when given on initialization
       @properties[:graph_width] = options.delete(:width) || graph_width
       @properties[:graph_height] = options.delete(:height) || graph_height
@@ -49,17 +66,17 @@ class GDash
       overrides = options.reject { |k,v| v.nil? }
       overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
 
-      if @properties[:include] == nil || @properties[:include].empty?
-        includes = []
-      elsif @properties[:include].is_a? Array
-        includes = @properties[:include]
-      elsif @properties[:include].is_a? String
-        includes = [@properties[:include]]
+      if @properties[:include_graphs] == nil || @properties[:include_graphs].empty?
+        graph_includes = []
+      elsif @properties[:include_graphs].is_a? Array
+        graph_includes = @properties[:include_graphs]
+      elsif @properties[:include_graphs].is_a? String
+        graph_includes = [@properties[:include_graphs]]
       else
         raise "Invalid value for include in #{File.join(directory, 'graph.yaml')}"
       end
 
-      directories = includes.map { |d|
+      directories = graph_includes.map { |d|
         File.join(graph_templates, d)
       }
       directories << directory
