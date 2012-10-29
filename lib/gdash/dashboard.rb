@@ -40,8 +40,6 @@ class GDash
         yaml_file = File.join(graph_templates, property_file)
         if File.exist?(yaml_file)
           @properties.rmerge!(YAML.load_file(yaml_file))
-        else
-          raise "Missing file #{yaml_file}' for include_properties in #{File.join(directory, 'dash.yaml')}"
         end
       end
 
