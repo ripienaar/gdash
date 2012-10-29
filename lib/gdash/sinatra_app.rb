@@ -115,6 +115,36 @@ class GDash
       erb :full_size_dashboard, :layout => false
     end
 
+    get '/:category/:dash/print/?*' do
+      options = {}
+      params["splat"] = params["splat"].first.split("/")
+
+      if params["splat"][0]
+        params["columns"] = params["splat"][0].to_i
+      else 
+        params["columns"] = @graph_columns
+      end
+
+      if params["splat"].size == 3
+        options[:width] = params["splat"][1].to_i
+        options[:height] = params["splat"][2].to_i
+      else
+        options[:width] = @graph_width
+        options[:height] = @graph_height
+      end
+
+      options[:include_properties] = "print.yml"
+      options.merge!(params)
+      
+      if @top_level["#{params[:category]}"].list.include?(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
+      else
+        @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
+      end
+
+      erb :print_dashboard, :layout => false
+    end
+
     get '/:category/:dash/?*' do
       options = {}
       params["splat"] = params["splat"].first.split("/")
