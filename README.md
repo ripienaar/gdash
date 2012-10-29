@@ -219,7 +219,7 @@ Examples are a list of server colors, timezones, etc. In _dash.yaml_:
 
     :include_properties: 
      - "common.yml" 
-     - "black_theme.yml" 
+     - "black-theme.yml" 
 
 Example _common.yml_:
 
@@ -227,12 +227,16 @@ Example _common.yml_:
      :timezone:         Europe/London
      :hide_legend:      false
 
-Example _black.yml_:
+Example _black-theme.yml_:
 
     :graph_properties: 
      :background_color: white
      :foreground_color: black
      :vertical_mark_color: "#330000"
+
+A external properties files can be also loaded from the url:
+
+  http://graphite.example.net:3000/category_name/dash_name/?include_properties=white-theme.yml
 
 Contact?
 --------
