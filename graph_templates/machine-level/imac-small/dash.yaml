@@ -1,0 +1,8 @@
+:name: iMac 2009
+:description: iMac 2009 (small one in livingroom)
+
+:include_graphs:
+ - "templates/os.basic"
+
+:graph_properties:
+ :servers: [ collectdjilles-imac-2_lan ]

@@ -1,0 +1,18 @@
+title       "Disk I/O across all disks in the machine"
+vtitle      "Ops/s"
+area        :first
+description "All I/O Operations combined across all disks in the machine"
+yunit_system :binary
+linewidth   2
+
+servers = @properties[:servers]
+
+field :writes, 
+               :color => "red",
+               :alias => "Writes",
+               :data  => "sumSeries(#{servers}.disk*.disk_ops.write)"
+
+field :reads, 
+               :color => "green",
+               :alias => "Reads",
+               :data  => "sumSeries(#{servers}.disk*.disk_ops.read)"

@@ -245,11 +245,10 @@ In the dash.yaml you can include the graphs as an include and override some prop
 	:name: "OS slnldogo0002"
 	:description: "OS slnldogo0002: slnldogo0002_springer-sbm_com"
 
-	:include: 
+	:include_graphs: 
 	 - "templates/os.basic" 
 	 - "templates/os.nfs" 
 	:graph_properties: 
-	 :environment: live
 	 :servers: [ server0001, server0002 ]
 	And in the graphs:
 
@@ -260,33 +259,26 @@ In the dash.yaml you can include the graphs as an include and override some prop
 	description "The combined CPU usage for all core servers"
 
 	servers = @properties[:servers] 
-	environment = @properties[:environment] 
-
-	server_definition = (servers.is_a? Array) ? "{#{servers.join(',')}}" : servers
 
 	field :iowait, :scale => 0.1,
 		       :color => "yellow",
 		       :alias => "IO Wait",
-		       :data  => "sumSeries(nonNegativeDerivative(servers.#{server_definition}.cpu*.cpu-{system,wait}.value))",
-		       :smoothing => 3
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu*.cpu-{system,wait}.value))",
 
 	field :user,   :scale => 0.1,
 		       :color => "green",
 		       :alias => "User",
-		       :data  => "sumSeries(nonNegativeDerivative(servers.#{server_definition}.cpu*.cpu-user.value))",
-		       :smoothing => 3
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu*.cpu-user.value))",
 
 	field :other,  :scale => 0.1,
 		       :color => "red",
 		       :alias => "Other",
-		       :data  => "sumSeries(nonNegativeDerivative(servers.#{server_definition}.cpu-*.cpu-{interrupt,softirq,steal}.value))",
-		       :smoothing => 3
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu-*.cpu-{interrupt,softirq,steal}.value))",
 
 	field :idle,   :scale => 0.1,
 		       :color => "grey",
 		       :alias => "idle",
-		       :data  => "sumSeries(nonNegativeDerivative(servers.#{server_definition}.cpu-*.cpu-idle.value))",
-		       :smoothing => 3
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu-*.cpu-idle.value))",
 
 We got to access this properties as @properties[:servers] because the missing_method disallows access the overrides directly, not sure why.
 
