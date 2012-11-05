@@ -1,0 +1,29 @@
+title       "Process States"
+vtitle      "count"
+area        :none
+description "The combined CPU usage across all cores"
+ymin        0
+linewidth   2
+
+servers = @properties[:servers]
+
+field :blocked,
+	:color => "red",
+	:alias => "Blocked",
+	:data => "sumSeries(#{servers}.processes.ps_state-blocked)"
+
+field :running,
+	:color => "green",
+	:alias => "Running",
+	:data => "sumSeries(#{servers}.processes.ps_state-running)"
+
+field :sleeping,
+	:color => "orange",
+	:alias => "Sleeping",
+	:data => "sumSeries(#{servers}.processes.ps_state-sleeping)",
+        :second_y_axis => true
+
+field :zombies,
+	:color => "grey",
+	:alias => "Omg! Zombies",
+	:data => "sumSeries(#{servers}.processes.ps_state-zombies)"
