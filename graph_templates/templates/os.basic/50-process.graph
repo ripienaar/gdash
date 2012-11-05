@@ -1,7 +1,7 @@
 title       "Process States"
 vtitle      "count"
 area        :none
-description "The combined CPU usage across all cores"
+description "Process states across machine(s)"
 ymin        0
 linewidth   2
 
