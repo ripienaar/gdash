@@ -151,11 +151,14 @@ class GDash
 
       case params["splat"][0]
         when 'time'
-          options[:from] = params["splat"][1] || "-1hour"
-          options[:until] = params["splat"][2] || "now"
+          options[:from] = params["splat"][1]
+          options[:until] = params["splat"][2]
         end
 
       options.merge!(query_params)
+
+      options[:from] ||= "-1hour"
+      options[:until] ||= "now"
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
