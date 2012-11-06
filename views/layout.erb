@@ -30,11 +30,20 @@
                             </li>
                         <% end %>
                         </ul>
-                        <ul class="nav secondary-nav">
-                            <li><a href="<%= @graphite_base %>">Data Browser</a></li>
-                            <li><a href="<%= @prefix %>/docs/">Docs</a></li>
-                            <li><a href="<%= [@prefix, params[:category], @params[:dash], 'print'].join('/')%>" target="_blank">Print</a></li> 
-                        </ul>
+			<ul class="nav secondary-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle">Menu</a>
+                                <ul class="dropdown-menu">
+				    <li><a href="<%= @graphite_base %>">Data Browser</a></li>
+				    <li><a href="/nagios3/">Nagios</a></li>
+				    <li class="divider"></li>
+				    <li><a href="<%= @prefix %>/docs/">GDash Docs</a></li>
+				    <li><a href="http://graphite.readthedocs.org/en/1.0/functions.html">Graphite Function Reference</a></li>
+				    <li class="divider"></li>
+				    <li><a href="<%= [@prefix, params[:category], @params[:dash], 'print'].join('/')%>" target="_blank">Print this page</a></li> 
+                                </ul>
+                            </li>
+			</ul>
                     </div>
                 </div>
             </div>
