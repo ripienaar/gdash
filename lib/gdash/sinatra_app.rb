@@ -177,6 +177,7 @@ class GDash
       include Rack::Utils
 
       alias_method :h, :escape_html
+      alias_method :u, :escape
 
       def link_to_interval(options)
         "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/') }\">#{ h(options[:label]) }</a>"
