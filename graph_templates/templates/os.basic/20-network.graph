@@ -1,0 +1,18 @@
+title       "Network Transmissions"
+vtitle      "Octets"
+area        :none
+description "All network interfaces combined across the machine"
+yunit_system :binary
+linewidth   2
+
+servers = @properties[:servers]
+
+field :rx, 
+               :color => "C7554B",
+               :alias => "Received",
+               :data  => "sumSeries(#{servers}.interface-*.if_packets.rx)"
+
+field :tx, :scale => -1,
+               :color => "95B262",
+               :alias => "Transmitted",
+               :data  => "sumSeries(#{servers}.interface-*.if_packets.tx)"

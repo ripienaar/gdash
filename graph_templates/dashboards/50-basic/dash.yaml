@@ -1,0 +1,9 @@
+:name: Basic 
+:description: Basic Machine level stats aggregated
+
+
+:include_graphs:
+ - "templates/os.basic"
+
+:graph_properties:
+ :servers: [ collectd* ]

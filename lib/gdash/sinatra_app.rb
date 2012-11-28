@@ -133,8 +133,8 @@ class GDash
 
       case params["splat"][0]
         when 'time'
-          options[:from] = params["splat"][1] || "-1hour"
-          options[:until] = params["splat"][2] || "now"
+          options[:from] = params["splat"][1]
+          options[:until] = params["splat"][2]
         end
 
       if query_params[:print]
@@ -145,6 +145,9 @@ class GDash
 	}
       end
       options.merge!(query_params)
+
+      options[:from] ||= "-1hour"
+      options[:until] ||= "now"
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
@@ -167,6 +170,7 @@ class GDash
       include Rack::Utils
 
       alias_method :h, :escape_html
+      alias_method :u, :escape
 
       def link_to_interval(options)
         "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/') }\">#{ h(options[:label]) }</a>"
