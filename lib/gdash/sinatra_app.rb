@@ -67,8 +67,18 @@ class GDash
     end
 
     get '/:category/:dash/details/:name' do
+      options = {}
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+		:background_color => "white",
+		:foreground_color => "black"
+	}
+      end
+      options.merge!(query_params)
+
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
@@ -87,7 +97,11 @@ class GDash
         @error = "No such graph available"
       end
 
-      erb :detailed_dashboard
+      if !query_params[:print]
+	erb :detailed_dashboard
+      else
+	erb :print_detailed_dashboard, :layout => false
+      end
     end
 
     get '/:category/:dash/full/?*' do
@@ -104,8 +118,6 @@ class GDash
         options[:height] = @graph_height
       end
 
-      options.merge!(query_params)
-
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
@@ -113,36 +125,6 @@ class GDash
       end
 
       erb :full_size_dashboard, :layout => false
-    end
-
-    get '/:category/:dash/print/?*' do
-      options = {}
-      params["splat"] = params["splat"].first.split("/")
-
-      if params["splat"][0]
-        params["columns"] = params["splat"][0].to_i
-      else 
-        params["columns"] = @graph_columns
-      end
-
-      if params["splat"].size == 3
-        options[:width] = params["splat"][1].to_i
-        options[:height] = params["splat"][2].to_i
-      else
-        options[:width] = @graph_width
-        options[:height] = @graph_height
-      end
-
-      options[:include_properties] = "print.yml"
-      options.merge!(params)
-      
-      if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
-      else
-        @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
-      end
-
-      erb :print_dashboard, :layout => false
     end
 
     get '/:category/:dash/?*' do
@@ -155,6 +137,13 @@ class GDash
           options[:until] = params["splat"][2] || "now"
         end
 
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+		:background_color => "white",
+		:foreground_color => "black"
+	}
+      end
       options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
@@ -163,7 +152,11 @@ class GDash
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
 
-      erb :dashboard
+      if !query_params[:print]
+	erb :dashboard
+      else
+	erb :print_dashboard, :layout => false
+      end
     end
 
     get '/docs/' do
@@ -188,6 +181,13 @@ class GDash
         end
 
         hash
+      end
+
+      def link_to_print
+	uri =  URI.parse(request.path)
+	new_query_ar = URI.decode_www_form(request.query_string) << ["print", "1"]
+	uri.query = URI.encode_www_form(new_query_ar)
+	uri.to_s
       end
     end
   end

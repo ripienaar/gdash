@@ -31,7 +31,7 @@
                         <ul class="nav secondary-nav">
                             <li><a href="<%= @graphite_base %>">Data Browser</a></li>
                             <li><a href="<%= @prefix %>/docs/">Docs</a></li>
-                            <li><a href="<%= [@prefix, params[:category], @params[:dash], 'print'].join('/')%>" target="_blank">Print</a></li> 
+                            <% if @dashboard %><li><a href="<%= link_to_print %>" target="_blank">Print</a></li><% end %> 
                         </ul>
                     </div>
                 </div>
