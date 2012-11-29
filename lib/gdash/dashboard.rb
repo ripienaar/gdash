@@ -4,9 +4,9 @@ class GDash
 
     def initialize(short_name, graph_templates, category, options={})
       @properties = {:graph_width => nil,
-                     :graph_height => nil,
-                     :graph_from => nil,
-                     :graph_until => nil}
+				:graph_height => nil,
+				:graph_from => nil,
+				:graph_until => nil}
 
       @properties[:short_name] = short_name
       @properties[:graph_templates] = graph_templates
@@ -40,35 +40,6 @@ class GDash
         end
       end
  	
-      # Properties defined in dashboard config file are overridden when given on initialization
-      @properties.rmerge!(options)
-      @properties[:graph_width] = options.delete(:width) || graph_width
-      @properties[:graph_height] = options.delete(:height) || graph_height
-      @properties[:graph_from] = options.delete(:from) || graph_from
-      @properties[:graph_until] = options.delete(:until) || graph_until
-    end
-
-    def list_graphs(directories)
-      graphs = {}
-      directories.each { |directory|
-        current_graphs = Dir.entries(directory).select {|f| f.match(/\.graph$/)}
-        current_graphs.each { |graph_filename|  
-          graph_name = File.basename(graph_filename, ".graph")
-          graphs[graph_name] = File.join(directory, graph_filename) 
-        }
-      }
-      graphs
-    end
-
-    def graphs(options={})
-      options[:width] ||= graph_width
-      options[:height] ||= graph_height
-      options[:from] ||= graph_from
-      options[:until] ||= graph_until
-
-      overrides = options.reject { |k,v| v.nil? }
-      overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
-
       if @properties[:include_graphs] == nil || @properties[:include_graphs].empty?
         graph_includes = []
       elsif @properties[:include_graphs].is_a? Array
@@ -79,19 +50,57 @@ class GDash
         raise "Invalid value for include in #{File.join(directory, 'graph.yaml')}"
       end
 
-      directories = graph_includes.map { |d|
+      @directories = graph_includes.map { |d|
         File.join(graph_templates, d)
       }
-      directories << directory
+      @directories << directory
 
-      graphs = list_graphs(directories)
-
-      graphs.keys.sort.map do |graph_name|
-        {:name => graph_name, 
-         :graphite => GraphiteGraph.new(graphs[graph_name], overrides)}
-      end
+      # Properties defined in dashboard config file are overridden when given on initialization
+      @properties.rmerge!(options)
+      @properties[:graph_width] = options.delete(:width) || graph_width
+      @properties[:graph_height] = options.delete(:height) || graph_height
+      @properties[:graph_from] = options.delete(:from) || graph_from
+      @properties[:graph_until] = options.delete(:until) || graph_until
     end
 
+    def list_graphs()
+      graphs = {}
+      @directories.each { |directory|
+        current_graphs = Dir.entries(directory).select {|f| f.match(/\.graph$/)}
+        current_graphs.each { |graph_filename|  
+          graph_name = File.basename(graph_filename, ".graph")
+          graphs[graph_name] = File.join(directory, graph_filename) 
+        }
+      }
+      graphs
+    end
+    
+    def graphs_named(options={})
+      options[:width] ||= graph_width
+      options[:height] ||= graph_height
+      options[:from] ||= graph_from
+      options[:until] ||= graph_until
+
+      graphs = list_graphs()
+
+      overrides = options.reject { |k,v| v.nil? }
+      overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
+
+      graphs_named = Hash.new
+      graphs.each do |graph_name, graph_path|
+				graphs_named[graph_name] = {
+					:name => graph_name,
+					:graphite => GraphiteGraph.new(File.join(graph_path), overrides)
+				}
+      end
+
+      graphs_named
+    end
+
+    def graphs(options={})
+      graphs_named(options).sort.map { |k,v| v } 
+    end
+    
     def method_missing(method, *args)
       if properties.include?(method)
         properties[method]

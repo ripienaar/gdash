@@ -87,7 +87,7 @@ class GDash
         @error = "No intervals defined in configuration"
       end
 
-      if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
+      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
         @graphs = @intervals.map do |e|
           new_props = {:from => e[0], :title => "#{main_graph.properties[:title]} - #{e[1]}"}
           new_props = main_graph.properties.merge new_props
@@ -131,11 +131,14 @@ class GDash
       options = {}
       params["splat"] = params["splat"].first.split("/")
 
-      case params["splat"][0]
-        when 'time'
-          options[:from] = params["splat"][1]
-          options[:until] = params["splat"][2]
-        end
+			if params["splat"].length > 0
+				if params["splat"][0] == 'time'
+					options[:from] = params["splat"][1] || "-1hour"
+          options[:until] = params["splat"][2] || "now"
+				else
+					pass
+				end
+      end
 
       if query_params[:print]
         options[:include_properties] = "print.yml"
@@ -164,6 +167,32 @@ class GDash
 
     get '/docs/' do
       markdown :README, :layout_engine => :erb
+    end
+
+		get '/:category/:dash/:name/?:from?/?:width?/?:height?/?:template?' do
+      if @top_level["#{params[:category]}"].list.include?(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+      else
+        @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
+      end
+
+      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
+				overrides = {}
+				overrides[:width] = @params[:width] || 800
+				overrides[:height] = @params[:height] || 400
+				overrides[:template] = @params[:template] if @params[:template]
+				overrides[:from] = @params[:from] if @params[:from]
+
+				graph = GraphiteGraph.new(main_graph.file, overrides)
+				url = [@top_level[@params[:category]].graphite_render, graph[:url]].join "?"
+
+				require 'net/http'
+				content_type 'image/png'
+				headers "Direct-Link" => url
+				Net::HTTP.get_response(URI.parse(url)).body
+      else
+        @error = "No such graph available"
+      end
     end
 
     helpers do
