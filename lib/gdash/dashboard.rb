@@ -2,7 +2,7 @@ class GDash
   class Dashboard
     attr_accessor :properties
 
-    def initialize(short_name, graph_templates, category, options={})
+    def initialize(short_name, graph_templates, category, options={}, graphite_render)
       @properties = {:graph_width => nil,
                      :graph_height => nil,
                      :graph_from => nil,
@@ -12,7 +12,8 @@ class GDash
       @properties[:graph_templates] = graph_templates
       @properties[:category] = category
       @properties[:directory] = File.join(graph_templates, category, short_name)
-      
+      @properties[:graphite_render] = graphite_render
+  
       raise "Cannot find dashboard directory #{directory}" unless File.directory?(directory)
       
       @properties[:yaml] = File.join(directory, "dash.yaml")
@@ -43,6 +44,11 @@ class GDash
       @properties[:graph_height] = options.delete(:height) || graph_height
       @properties[:graph_from] = options.delete(:from) || graph_from
       @properties[:graph_until] = options.delete(:until) || graph_until
+
+      #Graphite defined in gdash.yaml is overwritten if set in dash.yaml or in an :
+      if !(@properties[:graphite] == nil || @properties[:graphite].empty?)
+        @properties[:graphite_render] = @properties[:graphite]+"/render"
+      end
     end
 
     def list_graphs(directories)

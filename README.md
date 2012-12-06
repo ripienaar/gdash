@@ -200,6 +200,13 @@ property in dash.yaml:
     - "templates/os.basic" 
     - "templates/os.nfs" 
 
+Define several graphite backends?
+--------------------------------
+
+You can overwrite the default graphite setting from gdash.yaml setting :graphite: in the the dash.yaml:
+
+    :graphite: http://mygraphitehost:80
+
 Contact?
 --------
 
