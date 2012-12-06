@@ -1,6 +1,7 @@
 <% unless @error %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <%= erb :_interval_filter, :layout => false unless @interval_filters.empty? %>
+<div align="right" class="muted"><small>Source: <a class="muted" href="<%=@dashboard.graphite_render.sub("/render","")%>"><%=@dashboard.graphite_render.sub("/render","")%></a></small></h2></div>
 <div class="row">
     <table>
     <% row = 1 %>
@@ -13,10 +14,10 @@
             <% if graph %>
                 <% if graph[:graphite][:description] %>
                     <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
+                    <img src='<%= [@dashboard.graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
                 <% else %>
                     <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'></a>
+                    <img src='<%= [@dashboard.graphite_render, graph[:graphite][:url]].join "?" %>'></a>
                 <% end %>
             <% end %>
             </td>

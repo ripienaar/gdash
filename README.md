@@ -171,6 +171,42 @@ _600_ and a height of _300_
 
 The screen will refresh every minute
 
+Additional properties in graphs?
+--------------------------------
+
+You can specify additional properties in the dash.yaml:
+
+    :graph_properties:
+        :environment: dev
+        :server: [ a_server_name ]
+        :javaid: 1234
+    
+that can be accessed from the .graph like:
+    
+    server = @properties[:server]
+    environment = @properties[:environment]
+    
+    field :iowait, 
+        :alias => "IO Wait #{server}",
+        :data  => "servers.#{environment}.#{server}.cpu*.cpu-{system,wait}.value"
+
+Include graphs from other dashboard?
+------------------------------------
+
+You can include the graphs from other dashboard with the include 
+property in dash.yaml:
+
+    :include: 
+    - "templates/os.basic" 
+    - "templates/os.nfs" 
+
+Define several graphite backends?
+--------------------------------
+
+You can overwrite the default graphite setting from gdash.yaml setting :graphite: in the the dash.yaml:
+
+    :graphite: http://mygraphitehost:80
+
 Contact?
 --------
 
