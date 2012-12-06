@@ -171,6 +171,13 @@ _600_ and a height of _300_
 
 The screen will refresh every minute
 
+Define several graphite backends?
+--------------------------------
+
+You can overwrite the default graphite setting from gdash.yaml setting :graphite: in the the dash.yaml:
+
+    :graphite: http://mygraphitehost:80
+
 Contact?
 --------
 
