@@ -24,9 +24,9 @@ setTimeout("window.close();",1000);
             <td>
             <% if graph %>
                 <% if graph[:description] %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
+                    <img src='<%= [@dashboard.graphite_render, graph[:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
                 <% else %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>'>
+                    <img src='<%= [@dashboard.graphite_render, graph[:url]].join "?" %>'>
                 <% end %>
             <% end %>
             </td>

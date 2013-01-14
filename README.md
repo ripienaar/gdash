@@ -282,6 +282,12 @@ In the dash.yaml you can include the graphs as an include and override some prop
 
 We got to access this properties as @properties[:servers] because the missing_method disallows access the overrides directly, not sure why.
 
+Define several graphite backends?
+--------------------------------
+
+You can overwrite the default graphite setting from gdash.yaml setting :graphite: in the the dash.yaml:
+
+    :graphite: http://mygraphitehost:80
 
 Contact?
 --------
