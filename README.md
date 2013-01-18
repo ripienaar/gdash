@@ -289,6 +289,18 @@ You can overwrite the default graphite setting from gdash.yaml setting :graphite
 
     :graphite: http://mygraphitehost:80
 
+Local hrefs to the graphs in a dashboard?
+--------------------------------
+
+Add in the dashboard definition:
+
+	:navigation_pills: true
+
+
+This way, if you have quite a few graphs, at the top of the page there will be an index of graphs, 
+that link directly to the graph on the same page. 
+
+
 Contact?
 --------
 

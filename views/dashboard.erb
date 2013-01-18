@@ -2,11 +2,13 @@
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <%= erb :_interval_filter, :layout => false unless @interval_filters.empty? %>
 <div align="right" class="muted"><small>Source: <a class="muted" href="<%=@dashboard.graphite_render.sub("/render","")%>"><%=@dashboard.graphite_render.sub("/render","")%></a></small></h2></div>
+<% if @dashboard.properties[:navigation_pills] %>
 <ul class="nav pills nav-tabs" style="margin-bottom: 0px;">
   <% @dashboard.graphs.each do |graphs| %>
 	<li class="minipills"><a href="#<%= u graphs[:graphite][:title] %>"><%= graphs[:graphite][:title] %></a></li>
   <% end %>	
 </ul>
+<% end %>	
 
 <div class="row">
     <table>
