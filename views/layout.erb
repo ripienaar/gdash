@@ -23,7 +23,7 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle"><%= category.capitalize %></a>
                                 <ul class="dropdown-menu">
-                                <% @top_level[category].dashboards.sort_by{|b| b[:name].to_s}.each do |board| %>
+                                <% @top_level[category].dashboards.sort_by{|b| b[:dash_id].to_s}.each do |board| %>
                                     <li><a href="<%= [@prefix, category, board[:link]].join('/') %>/"><%= board[:name] %></a></li>
                                 <% end %>
                                 </ul>
@@ -35,7 +35,6 @@
                                 <a href="#" class="dropdown-toggle">Menu</a>
                                 <ul class="dropdown-menu">
 				    <li><a href="<%= @graphite_base %>">Data Browser</a></li>
-				    <li><a href="/nagios3/">Nagios</a></li>
 				    <li class="divider"></li>
 				    <li><a href="<%= @prefix %>/docs/">GDash Docs</a></li>
 				    <li><a href="http://graphite.readthedocs.org/en/1.0/functions.html">Graphite Function Reference</a></li>
