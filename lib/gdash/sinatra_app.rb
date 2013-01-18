@@ -39,7 +39,7 @@ class GDash
       @top_level = Hash.new
       Dir.entries(@graph_templates).each do |category|
         if File.directory?("#{@graph_templates}/#{category}")
-          
+
           unless ("#{category}" =~ /^\./ )
             gdash = GDash.new(@graphite_base, "/render/", @graph_templates, category, {:width => @graph_width, :height => @graph_height})
             @top_level["#{category}"] = gdash unless gdash.dashboards.empty?
@@ -70,10 +70,10 @@ class GDash
       options = {}
       if query_params[:print]
         options[:include_properties] = "print.yml"
-        options[:graph_properties] = { 
-		:background_color => "white",
-		:foreground_color => "black"
-	}
+        options[:graph_properties] = {
+          :background_color => "white",
+          :foreground_color => "black"
+        }
       end
       options.merge!(query_params)
 
@@ -98,9 +98,9 @@ class GDash
       end
 
       if !query_params[:print]
-	erb :detailed_dashboard
+        erb :detailed_dashboard
       else
-	erb :print_detailed_dashboard, :layout => false
+        erb :print_detailed_dashboard, :layout => false
       end
     end
 
@@ -131,21 +131,21 @@ class GDash
       options = {}
       params["splat"] = params["splat"].first.split("/")
 
-			if params["splat"].length > 0
-				if params["splat"][0] == 'time'
-					options[:from] = params["splat"][1] || "-1hour"
+      if params["splat"].length > 0
+        if params["splat"][0] == 'time'
+          options[:from] = params["splat"][1] || "-1hour"
           options[:until] = params["splat"][2] || "now"
-				else
-					pass
-				end
+        else
+          pass
+        end
       end
 
       if query_params[:print]
         options[:include_properties] = "print.yml"
-        options[:graph_properties] = { 
-		:background_color => "white",
-		:foreground_color => "black"
-	}
+        options[:graph_properties] = {
+          :background_color => "white",
+          :foreground_color => "black"
+        }
       end
       options.merge!(query_params)
 
@@ -159,9 +159,9 @@ class GDash
       end
 
       if !query_params[:print]
-	erb :dashboard
+        erb :dashboard
       else
-	erb :print_dashboard, :layout => false
+        erb :print_dashboard, :layout => false
       end
     end
 
@@ -169,7 +169,7 @@ class GDash
       markdown :README, :layout_engine => :erb
     end
 
-		get '/:category/:dash/:name/?:from?/?:width?/?:height?/?:template?' do
+    get '/:category/:dash/:name/?:from?/?:width?/?:height?/?:template?' do
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
       else
@@ -177,19 +177,19 @@ class GDash
       end
 
       if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
-				overrides = {}
-				overrides[:width] = @params[:width] || 800
-				overrides[:height] = @params[:height] || 400
-				overrides[:template] = @params[:template] if @params[:template]
-				overrides[:from] = @params[:from] if @params[:from]
+        overrides = {}
+        overrides[:width] = @params[:width] || 800
+        overrides[:height] = @params[:height] || 400
+        overrides[:template] = @params[:template] if @params[:template]
+        overrides[:from] = @params[:from] if @params[:from]
 
-				graph = GraphiteGraph.new(main_graph.file, overrides)
-				url = [@top_level[@params[:category]].graphite_render, graph[:url]].join "?"
+        graph = GraphiteGraph.new(main_graph.file, overrides)
+        url = [@top_level[@params[:category]].graphite_render, graph[:url]].join "?"
 
-				require 'net/http'
-				content_type 'image/png'
-				headers "Direct-Link" => url
-				Net::HTTP.get_response(URI.parse(url)).body
+        require 'net/http'
+        content_type 'image/png'
+        headers "Direct-Link" => url
+        Net::HTTP.get_response(URI.parse(url)).body
       else
         @error = "No such graph available"
       end
@@ -200,7 +200,6 @@ class GDash
 
       alias_method :h, :escape_html
       alias_method :u, :escape
-
       def link_to_interval(options)
         "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/') }\">#{ h(options[:label]) }</a>"
       end
@@ -217,10 +216,10 @@ class GDash
       end
 
       def link_to_print
-	uri =  URI.parse(request.path)
-	new_query_ar = URI.decode_www_form(request.query_string) << ["print", "1"]
-	uri.query = URI.encode_www_form(new_query_ar)
-	uri.to_s
+        uri =  URI.parse(request.path)
+        new_query_ar = URI.decode_www_form(request.query_string) << ["print", "1"]
+        uri.query = URI.encode_www_form(new_query_ar)
+        uri.to_s
       end
     end
   end
