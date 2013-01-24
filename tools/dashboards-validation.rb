@@ -24,19 +24,21 @@ begin
   if options[:path].nil?
     puts "Missing options path."
     puts opt_parser
-    exit
+    abort()
   end
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument
   puts $!.to_s
   puts opt_parser
-  exit
+  abort()
 end
 
 unless File.directory? options[:path]
   puts "Path #{options[:path]} does not exists."
   puts opt_parser
-  exit
+  abort()
 end
+
+errors = []
 
 Dir.foreach(options[:path]).each do |dashboard|
   next if dashboard == '.' or dashboard == '..'
@@ -49,7 +51,7 @@ Dir.foreach(options[:path]).each do |dashboard|
       category_desc = File.join(category_dir, 'dash.yaml')
 
       if !File.exists?(category_desc)
-        puts "The dashboard description file (" + category_desc + ") is missing."
+        errors << "The dashboard description file (" + category_desc + ") is missing."
       end
 
       graphs = Dir.entries(category_dir).select{|f| f.match(/\.graph$/)}
@@ -58,12 +60,16 @@ Dir.foreach(options[:path]).each do |dashboard|
           full_path = File.join(category_dir, graph)
           GraphiteGraph.new(full_path)
         rescue Exception => e
-          puts "Can't parse the graph file " + full_path + ":"
-          puts "\t " + e.message
+          errors << "Can't parse the graph file " + full_path + ":"
+          errors << "\t " + e.message
         end
       end
     end
   rescue Exception => e
     p e
   end
+end
+
+if !errors.empty?
+  abort(errors.join("\n"))
 end
