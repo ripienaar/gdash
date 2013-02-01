@@ -10,12 +10,14 @@ class GDash
   require 'gdash/sinatra_app'
   require 'graphite_graph'
 
-  attr_reader :graphite_base, :graphite_render, :dash_templates, :height, :width, :from, :until
+  attr_reader :graphite_base, :graphite_render, :graph_templates, :category, :dash_templates, :height, :width, :from, :until
 
-  def initialize(graphite_base, render_url, dash_templates, options={})
+  def initialize(graphite_base, render_url, graph_templates, category,  options={})
     @graphite_base = graphite_base
     @graphite_render = [@graphite_base, "/render/"].join
-    @dash_templates = dash_templates
+    @graph_templates = graph_templates
+    @category = category
+    @dash_templates = File.join(graph_templates, category)
     @height = options.delete(:height)
     @width = options.delete(:width)
     @from = options.delete(:from)
@@ -30,7 +32,7 @@ class GDash
     options[:from] ||= @from
     options[:until] ||= @until
 
-    Dashboard.new(name, dash_templates, options, graphite_render)
+    Dashboard.new(name, graph_templates, category, options, graphite_render)
   end
 
   def list
@@ -44,13 +46,14 @@ class GDash
       begin
         yaml_file = File.join(dash_templates, dash, "dash.yaml")
         if File.exist?(yaml_file)
-          dashboards << YAML.load_file(yaml_file).merge({:link => dash})
+          dashboard = YAML.load_file(yaml_file).merge({:link => dash})
+          dashboard[:dash_id] = dash
+          dashboards << dashboard
         end
       rescue Exception => e
         p e
       end
     end
-
     dashboards.sort_by{|d| d[:name].to_s}
   end
 end

@@ -1,5 +1,35 @@
-<ul class="pills" style="margin-bottom: 0px;">
+<ul class="nav pills nav-tabs" style="margin-bottom: 0px;">
+  <% active = false %>
   <% @interval_filters.each do |options| %>
-  <li<%= ' class="active"' if options[:from] == @dashboard.graph_from %>><%= link_to_interval(options) %></li>
-  <% end %>
+    <li<%=  if options[:from] == @dashboard.graph_from; active=true; ' class="active"'; end %>><%= link_to_interval(options) %></li>
+  <% end %>	
+  <li<%= ' class="active"' if active == false %>><a href="#" id="other_range">Other range...</a></li>
 </ul>
+
+<div class="modal hide" id="other_range_picker">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Other range...</h3>
+  </div>
+  <div class="span5">
+  <form class="form-inline" action="<%= [@prefix, @params[:category], @params[:dash]].join('/') %>" method="GET">
+    <input type="text" name="from" id="from" value="<%= h params[:from] %>" placeholder="From"/>
+    <input type="text" name="until" id="until" value="<%= h params[:until] %>" placeholder="Until"/>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+    <input type="submit" class="btn btn-primary"/>
+  </div>
+</form>
+</div>
+      
+
+<script>
+  $(function() {
+    $('#from').datepicker();
+    $('#until').datepicker();
+    $('#other_range').click(function() {
+      $('#other_range_picker').modal('show');
+    });
+  });
+</script>

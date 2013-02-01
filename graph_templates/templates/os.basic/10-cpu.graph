@@ -1,0 +1,27 @@
+title       "Combined CPU Usage"
+vtitle      "%"
+area        :stacked
+description "The combined CPU usage across all cores"
+ymax 	    100
+
+servers = @properties[:servers]
+
+field :nice, :scale => 1,
+               :color => "red",
+               :alias => "Nice",
+               :data  => "averageSeries(#{servers}.cpu-*.cpu-nice)"
+
+field :system, :scale => 1,
+               :color => "orange",
+               :alias => "System",
+               :data  => "averageSeries(#{servers}.cpu-*.cpu-system)"
+
+field :user, :scale => 1,
+             :color => "yellow",
+             :alias => "User",
+             :data  => "averageSeries(#{servers}.cpu-*.cpu-user)"
+
+field :idle, :scale => 1,
+             :color => "black",
+             :alias => "Idle",
+             :data  => "alpha(averageSeries(#{servers}.cpu-*.cpu-idle), 0.001)"

@@ -1,0 +1,29 @@
+title       "Process States"
+vtitle      "count"
+area        :none
+description "Process states across machine(s)"
+ymin        0
+linewidth   2
+
+servers = @properties[:servers]
+
+field :blocked,
+	:color => "80264D",
+	:alias => "Blocked",
+	:data => "sumSeries(#{servers}.processes.ps_state-blocked)"
+
+field :running,
+	:color => "CBD6B6",
+	:alias => "Running",
+	:data => "sumSeries(#{servers}.processes.ps_state-running)"
+
+field :sleeping,
+	:color => "CE9A7B",
+	:alias => "Sleeping",
+	:data => "sumSeries(#{servers}.processes.ps_state-sleeping)",
+        :second_y_axis => true
+
+field :zombies,
+	:color => "D15E3F",
+	:alias => "Omg! Zombies",
+	:data => "sumSeries(#{servers}.processes.ps_state-zombies)"

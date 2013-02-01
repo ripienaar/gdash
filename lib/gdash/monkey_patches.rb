@@ -1,12 +1,5 @@
 class Array
   def in_groups_of(chunk_size, padded_with=nil)
-    if chunk_size <= 1
-      if block_given?
-        self.each{|a| yield([a])}
-      else
-        self
-      end
-    else
       arr = self.clone
 
       # how many to add
@@ -29,9 +22,16 @@ class Array
         result
       end
     end
-  end
 end
 
 class GraphiteGraph
   attr_accessor :properties, :file
+end
+
+class Hash
+  def rmerge!(other_hash)
+    merge!(other_hash) do |key, oldval, newval|
+      oldval.class == self.class ? oldval.rmerge!(newval) : newval
+    end
+  end
 end

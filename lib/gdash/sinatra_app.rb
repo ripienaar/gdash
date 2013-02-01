@@ -39,8 +39,10 @@ class GDash
       @top_level = Hash.new
       Dir.entries(@graph_templates).each do |category|
         if File.directory?("#{@graph_templates}/#{category}")
+
           unless ("#{category}" =~ /^\./ )
-            @top_level["#{category}"] = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/#{category}"), {:width => @graph_width, :height => @graph_height})
+            gdash = GDash.new(@graphite_base, "/render/", @graph_templates, category, {:width => @graph_width, :height => @graph_height})
+            @top_level["#{category}"] = gdash unless gdash.dashboards.empty?
           end
         end
       end
@@ -65,8 +67,18 @@ class GDash
     end
 
     get '/:category/:dash/details/:name' do
+      options = {}
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = {
+          :background_color => "white",
+          :foreground_color => "black"
+        }
+      end
+      options.merge!(query_params)
+
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
@@ -75,7 +87,7 @@ class GDash
         @error = "No intervals defined in configuration"
       end
 
-      if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
+      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
         @graphs = @intervals.map do |e|
           new_props = {:from => e[0], :title => "#{main_graph.properties[:title]} - #{e[1]}"}
           new_props = main_graph.properties.merge new_props
@@ -85,7 +97,11 @@ class GDash
         @error = "No such graph available"
       end
 
-      erb :detailed_dashboard
+      if !query_params[:print]
+        erb :detailed_dashboard
+      else
+        erb :print_detailed_dashboard, :layout => false
+      end
     end
 
     get '/:category/:dash/full/?*' do
@@ -102,8 +118,6 @@ class GDash
         options[:height] = @graph_height
       end
 
-      options.merge!(query_params)
-
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
@@ -117,13 +131,26 @@ class GDash
       options = {}
       params["splat"] = params["splat"].first.split("/")
 
-      case params["splat"][0]
-        when 'time'
+      if params["splat"].length > 0
+        if params["splat"][0] == 'time'
           options[:from] = params["splat"][1] || "-1hour"
           options[:until] = params["splat"][2] || "now"
+        else
+          pass
         end
+      end
 
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = {
+          :background_color => "white",
+          :foreground_color => "black"
+        }
+      end
       options.merge!(query_params)
+
+      options[:from] ||= "-1hour"
+      options[:until] ||= "now"
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
@@ -131,18 +158,48 @@ class GDash
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
 
-      erb :dashboard
+      if !query_params[:print]
+        erb :dashboard
+      else
+        erb :print_dashboard, :layout => false
+      end
     end
 
     get '/docs/' do
       markdown :README, :layout_engine => :erb
     end
 
+    get '/:category/:dash/:name/?:from?/?:width?/?:height?/?:template?' do
+      if @top_level["#{params[:category]}"].list.include?(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+      else
+        @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
+      end
+
+      if main_graph = @dashboard.graphs_named[params[:name]][:graphite]
+        overrides = {}
+        overrides[:width] = @params[:width] || 800
+        overrides[:height] = @params[:height] || 400
+        overrides[:template] = @params[:template] if @params[:template]
+        overrides[:from] = @params[:from] if @params[:from]
+
+        graph = GraphiteGraph.new(main_graph.file, overrides)
+        url = [@top_level[@params[:category]].graphite_render, graph[:url]].join "?"
+
+        require 'net/http'
+        content_type 'image/png'
+        headers "Direct-Link" => url
+        Net::HTTP.get_response(URI.parse(url)).body
+      else
+        @error = "No such graph available"
+      end
+    end
+
     helpers do
       include Rack::Utils
 
       alias_method :h, :escape_html
-
+      alias_method :u, :escape
       def link_to_interval(options)
         "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/') }\">#{ h(options[:label]) }</a>"
       end
@@ -156,6 +213,13 @@ class GDash
         end
 
         hash
+      end
+
+      def link_to_print
+        uri =  URI.parse(request.path)
+        new_query_ar = URI.decode_www_form(request.query_string) << ["print", "1"]
+        uri.query = URI.encode_www_form(new_query_ar)
+        uri.to_s
       end
     end
   end

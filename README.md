@@ -171,12 +171,135 @@ _600_ and a height of _300_
 
 The screen will refresh every minute
 
+Additional properties in graphs?
+--------------------------------
+
+You can specify additional properties in the dash.yaml:
+
+    :graph_properties:
+        :environment: dev
+        :server: [ a_server_name ]
+        :javaid: 1234
+    
+that can be accessed from the .graph like:
+    
+    server = @properties[:server]
+    environment = @properties[:environment]
+    
+    field :iowait, 
+        :alias => "IO Wait #{server}",
+        :data  => "servers.#{environment}.#{server}.cpu*.cpu-{system,wait}.value"
+
+Include graphs from other dashboard?
+------------------------------------
+
+You can include the graphs from other dashboard with the include 
+property in dash.yaml:
+
+    :include: 
+    - "templates/os.basic" 
+    - "templates/os.nfs" 
+
+Two new features:
+
+Allow override graph properties from the dash.yaml.
+Support include the graphs from other dashboards in dash.yaml
+These two features allow you create a set of templates that you can include and parametrize, like this:
+
+	└── graph_templates
+	    ├── live
+	    │   ├── 3_OS_server0001
+	    │   │   └── dash.yaml
+	    │   ├── 3_OS_server0002
+	    │   │   └── dash.yaml
+	    │   ├── 3_OS_live_all
+	    │   │   └── dash.yaml
+	    └── templates
+		├── os.basic
+		│   ├── 10-cpu.graph
+		│   ├── 20-load.graph
+		│   ├── 25-memory.graph
+		│   ├── 26-swap-io.graph
+		│   ├── 30-network.graph
+		│   ├── 40-processes.graph
+		│   ├── 80-io.graph
+		│   ├── 81-io-time.graph
+		│   ├── 82-io-ops.graph
+		│   └── 90-df.graph
+		├── os.basic_multi
+		│   ├── 10-cpu-multi.graph
+		│   ├── 30-network-multi.graph
+		│   ├── 80-io-multi.graph
+		│   ├── 81-io-time-multi.graph
+		│   └── 82-io-ops-multi.graph
+		├── os.marklogic
+		│   ├── 92-ml-volumes-df.graph
+		│   └── 93-ml-volumes-df.graph
+		└── os.nfs
+		     ├── 91-nfs-basic.graph
+		     ├── 92-nfs-detailed.graph
+		     └── 93-slabinfo.graph
+
+In the dash.yaml you can include the graphs as an include and override some properties:
+
+	:name: "OS slnldogo0002"
+	:description: "OS slnldogo0002: slnldogo0002_springer-sbm_com"
+
+	:include_graphs: 
+	 - "templates/os.basic" 
+	 - "templates/os.nfs" 
+	:graph_properties: 
+	 :servers: [ server0001, server0002 ]
+	And in the graphs:
+
+	title       "Combined CPU Usage"
+	vtitle      "percent"
+	linemode    "connected" 
+	timezone    "Europe/London"
+	description "The combined CPU usage for all core servers"
+
+	servers = @properties[:servers] 
+
+	field :iowait, :scale => 0.1,
+		       :color => "yellow",
+		       :alias => "IO Wait",
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu*.cpu-{system,wait}.value))",
+
+	field :user,   :scale => 0.1,
+		       :color => "green",
+		       :alias => "User",
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu*.cpu-user.value))",
+
+	field :other,  :scale => 0.1,
+		       :color => "red",
+		       :alias => "Other",
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu-*.cpu-{interrupt,softirq,steal}.value))",
+
+	field :idle,   :scale => 0.1,
+		       :color => "grey",
+		       :alias => "idle",
+		       :data  => "sumSeries(nonNegativeDerivative(#{servers}.cpu-*.cpu-idle.value))",
+
+We got to access this properties as @properties[:servers] because the missing_method disallows access the overrides directly, not sure why.
+
 Define several graphite backends?
 --------------------------------
 
 You can overwrite the default graphite setting from gdash.yaml setting :graphite: in the the dash.yaml:
 
     :graphite: http://mygraphitehost:80
+
+Local hrefs to the graphs in a dashboard?
+--------------------------------
+
+Add in the dashboard definition:
+
+	:navigation_pills: true
+
+
+This way, if you have quite a few graphs, at the top of the page there will be an index of graphs, 
+that link directly to the graph on the same page. 
+
 
 Contact?
 --------

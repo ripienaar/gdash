@@ -1,0 +1,19 @@
+title       "Disk usage across all disks in the machine"
+vtitle      "%"
+area        :first
+description "Disk usage across all disks in the machine"
+ymax 	    100
+ymin 	    0
+
+servers = @properties[:servers]
+
+field :free, 
+               :color => "green",
+               :alias => "Used",
+               :data  => "asPercent(sumSeries(keepLastValue(#{servers}.df-*.df_complex-used)), sumSeries(keepLastValue(#{servers}.df-*.df_complex-*)))"
+
+field :writes, 
+               :color => "C7554B",
+               :alias => "Change",
+               :data  => "sumSeries(derivative(#{servers}.df-*.df_complex-used))",
+	       :second_y_axis => true
