@@ -64,6 +64,11 @@ class GDash
       erb :index
     end
 
+    Less.paths << File.join(settings.views, 'bootstrap')
+    get "/bootstrap/:name.css" do
+      less :"bootstrap/#{params[:name]}", :paths => ["views/bootstrap"]
+    end
+
     get '/:category/:dash/details/:name' do
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
@@ -75,11 +80,13 @@ class GDash
         @error = "No intervals defined in configuration"
       end
 
-      if main_graph = @dashboard.graphs[params[:name].to_i][:graphite]
+      if main_graph = @dashboard.graph_by_name(params[:name])
         @graphs = @intervals.map do |e|
-          new_props = {:from => e[0], :title => "#{main_graph.properties[:title]} - #{e[1]}"}
-          new_props = main_graph.properties.merge new_props
-          GraphiteGraph.new(main_graph.file, new_props)
+          new_props = {:from => e[0], :title => "#{main_graph[:graphite].properties[:title]} - #{e[1]}"}
+          new_props = main_graph[:graphite].properties.merge new_props
+          graph = main_graph.dup
+          graph[:graphite] = GraphiteGraph.new(main_graph[:graphite].file, new_props)
+          graph
         end
       else
         @error = "No such graph available"

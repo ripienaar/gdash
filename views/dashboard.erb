@@ -12,33 +12,21 @@
             <% i = grouped_graphs.rindex(graphs) * @graph_columns + graphs.rindex(graph) %>
             <td>
             <% if graph %>
-                <% if graph[:graphite][:description] %>
-                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
-                    <img src='<%= [@dashboard.graphite_render, graph[:graphite][:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>"></a>
-                <% else %>
-                    <a href='<%= [@prefix, params[:category], @params[:dash], 'details', i].join "/" %>'>
-                    <img src='<%= [@dashboard.graphite_render, graph[:graphite][:url]].join "?" %>'></a>
-                <% end %>
+              <%= erb(:graph, :locals => { :graph => graph }) %>
             <% end %>
             </td>
         <% end %>
         </tr>
     <% row += 1 %>
     <% end %>
-    </table>
+    </ul>
+  </div>
 </div>
 <script>
     $(function () {
-      $("img[rel=popover-above]")
+      $(".graph img")
         .popover({
-          placement: "above", delayIn: 1000
-        })
-    })
-
-    $(function () {
-      $("img[rel=popover-below]")
-        .popover({
-          placement: "below", delayIn: 1000
+          placement: "bottom", delay: 1000
         })
     })
 </script>

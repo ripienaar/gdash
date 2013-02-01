@@ -47,6 +47,19 @@ class GDash
       end
     end
 
+    def graph_by_name(name, options={})
+      options[:width] ||= graph_width
+      options[:height] ||= graph_height
+      options[:from] ||= graph_from
+      options[:until] ||= graph_until
+
+      graph = "#{name}.graph"
+
+      overrides = options.reject { |k,v| v.nil? }
+
+      {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), overrides)}
+    end
+
     def method_missing(method, *args)
       if properties.include?(method)
         properties[method]

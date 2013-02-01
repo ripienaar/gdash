@@ -8,11 +8,7 @@
           <% graphrows.each do |graph| %>
             <td>
             <% if graph %>
-                <% if graph[:description] %>
-                    <img src='<%= [@dashboard.graphite_render, graph[:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
-                <% else %>
-                    <img src='<%= [@dashboard.graphite_render, graph[:url]].join "?" %>'>
-                <% end %>
+              <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
             <% end %>
             </td>
           <% end %>
@@ -23,22 +19,9 @@
 </div>
 <script>
     $(function () {
-      $("img[rel=popover-above]")
+      $(".graph img")
         .popover({
-          placement: "above", delayIn: 1000
-        })
-        .click(function(e) {
-          e.preventDefault()
-        })
-    })
-
-    $(function () {
-      $("img[rel=popover-below]")
-        .popover({
-          placement: "below", delayIn: 1000
-        })
-        .click(function(e) {
-          e.preventDefault()
+          placement: "bottom", delay: 1000
         })
     })
 </script>
