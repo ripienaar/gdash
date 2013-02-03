@@ -2,7 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'yaml'
 require 'erb'
-require 'redcarpet'
+#require 'redcarpet'
 require 'less'
 
 class GDash

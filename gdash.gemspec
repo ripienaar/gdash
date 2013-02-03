@@ -15,5 +15,8 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency('rdoc')
   s.add_dependency 'graphite_graph'
   s.add_dependency 'sinatra'
-  s.add_dependency 'redcarpet'
+#  s.add_dependency 'redcarpet'
+  s.add_dependency 'therubyrhino'
+  s.executables=['lib/gdash.rb']
+  s.default_executable = 'lib/gdash.rb'
 end

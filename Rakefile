@@ -6,3 +6,6 @@ spec = eval(File.read('gdash.gemspec'))
 
 Gem::PackageTask.new(spec) do |pkg|
 end
+
+require 'warbler'
+Warbler::Task.new
