@@ -10,11 +10,54 @@ See the _sample_ directory for a sample dashboard configuration.
 
 ![Sample dashboard](https://github.com/ripienaar/gdash/raw/master/sample/email.png)
 
-Config?
+Install?
 -------
 
 This dashboard is a Sinatra application, I suggest deploying it
 in Passenger or other Sinatra application server.
+
+You can also build an executable WAR to run gdash with JRuby. (experimental)
+
+
+## JRuby? (experimental)
+
+To run gdash with JRuby, e.g. if you have to run in on a windows machine, you can create a (executable) WAR archive.
+Currently you still need Ruby for creating the archive.	
+This is still experimental!
+
+###Known Issues
+
+- I had to remove the dependency to redcarpet (because of native C dependencies, see https://github.com/jruby/jruby/wiki/Troubleshooting), so rendering the "docs" page will fail. 
+- I experienced crashes of the packaged jetty during my tests
+
+###Todo:
+- Have the gdash.yaml outside of the WAR file
+- Replace redcarpet with a different renderer or make it work with JRuby/warble
+- Do proper testing on different platforms
+- Speed up startup time, performance in general
+
+###How to create a (executable) WAR:
+
+```
+git clone --branch=jruby https://github.com/ripienaar/gdash.git	
+cd gdash  	
+gem install bundler  
+bundle install   
+```
+
+Configure your environment (see below, gdash.yaml must exist!). Make sure no gdash.war redisdes in your current directory. 	
+`rake war  `
+or  
+`warble executable war  `
+if you want to include a webserver (default: jetty, edit /config/warbl.rb to switch to winstone or jenkins webserver).  
+
+Run:	
+`	java -jar gdash.war [--httpPort=5601]`
+
+Todo: Externalize the configuration (gdash.yaml). Any help would be appreciated.  
+
+Config?
+-------
 
 A sample _gdash.yaml-sample_ is included, you should rename it to
 _gdash.yaml_ and adjust the url to your Graphite etc in there.
