@@ -2,4 +2,10 @@
   <% @interval_filters.each do |options| %>
   <li<%= ' class="active"' if options[:from] == @dashboard.graph_from %>><%= link_to_interval(options) %></li>
   <% end %>
+  <li><a id="toggleDateTimePicker" href="#">Select Date</a></li>
+</ul>
+<ul class="nav nav-pill" id="dateTimePicker">
+  <li><input type="text"  name="dt_from" id="dt_from" value="from"/></li>
+  <li><input type="text" name="dt_to" id="dt_to" value="until"/></li>
+  <li><button type="button" class="btn" onClick="selectDt()">Show</button></li>
 </ul>
