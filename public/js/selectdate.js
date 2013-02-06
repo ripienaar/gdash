@@ -55,7 +55,7 @@ function buildGraphiteDateUrl(dt_from, dt_to)
   to = buildGraphiteDateString(dt_to);
   params =  "?&from=" + from + "&until=" + to;
   newurl = document.URL.replace(/#/g, '');
-  regex = /(\?&(from|until)=.+)/g;
+  regex = /((time|\?*&from=|\?*&until=).+)/g;
   if (newurl.match(regex)) {
     newurl = newurl.replace(regex,"");
   }
