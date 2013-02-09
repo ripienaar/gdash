@@ -1,8 +1,7 @@
 $(document).ready(function() {
-  $('#dateTimePicker').hide();
-  $('#toggleDateTimePicker').click(function() {
-    $('#dateTimePicker').toggle(400);
-  });
+  $.cookie.json = true
+  setDateFromCookie();
+  hideDateTimePicker();
 });
 
 $(function() {
@@ -42,9 +41,38 @@ $(function() {
   });
 });
 
+function setDateFromCookie() {
+  value = $.cookie("dateSelected")
+  if(value) {
+    $('#dt_from').val(formatSelectedDate(new Date(value.from)));
+    $('#dt_to').val(formatSelectedDate(new Date(value.to)));
+  }
+}
+
+function formatSelectedDate(date) {
+  return "" + zeroPad(date.getMonth() + 1) + "/" + 
+    zeroPad(date.getDate()) + "/" 
+    + date.getFullYear() + " " 
+    + zeroPad(date.getHours()) + ":" + 
+    zeroPad(date.getMinutes());
+}
+
+function storeDatesToCookie(dt_from, dt_to) {
+  value = { from: dt_from, to: dt_to }
+  $.cookie('dateSelected', value , { expires: 14, path: '/' });
+}
+
+function hideDateTimePicker() {
+  $('#dateTimePicker').hide();
+  $('#toggleDateTimePicker').click(function() {
+    $('#dateTimePicker').toggle(400);
+  });
+}
+
 function selectDt() {
-  var dt_from = $('#dt_from').datetimepicker('getDate');
-  var dt_to = $('#dt_to').datetimepicker('getDate');
+  dt_from = $('#dt_from').datetimepicker('getDate');
+  dt_to = $('#dt_to').datetimepicker('getDate');
+  storeDatesToCookie(dt_from, dt_to);
   window.location = buildGraphiteDateUrl(dt_from, dt_to);
   return true;
 }
