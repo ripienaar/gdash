@@ -47,13 +47,14 @@ class GDash
       begin
         yaml_file = File.join(dash_templates, dash, "dash.yaml")
         if File.exist?(yaml_file)
-          dashboards << YAML.load_file(yaml_file).merge({:link => dash})
+          dashboard = YAML.load_file(yaml_file).merge({:link => dash})
+          dashboard[:dash_id] = dash
+          dashboards << dashboard
         end
       rescue Exception => e
         p e
       end
     end
-
     dashboards.sort_by{|d| d[:name].to_s}
   end
 end
