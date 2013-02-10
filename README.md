@@ -177,25 +177,25 @@ Define several graphite backends?
 You can overwrite the default graphite setting from gdash.yaml setting :graphite: in the the dash.yaml:
 
     :graphite: http://mygraphitehost:80
-=======
+
 Additional properties in graphs?
 --------------------------------
 
-You can specify additional properties in the dash.yaml:
+You can specify additional properties in the dash.yaml for each dashboard:
 
     :graph_properties:
         :environment: dev
-        :server: [ a_server_name ]
+        :servers: [ "server1.domain.com", "server2.domain.com" ]
         :javaid: 1234
     
 that can be accessed from the .graph like:
     
-    server = @properties[:server]
+    servers = @properties[:servers]
     environment = @properties[:environment]
     
     field :iowait, 
         :alias => "IO Wait #{server}",
-        :data  => "servers.#{environment}.#{server}.cpu*.cpu-{system,wait}.value"
+        :data  => "servers.#{environment}.#{servers.join(',')}.cpu*.cpu-{system,wait}.value"
 
 Include graphs from other dashboard?
 ------------------------------------
@@ -203,9 +203,36 @@ Include graphs from other dashboard?
 You can include the graphs from other dashboard with the include 
 property in dash.yaml:
 
-    :include: 
+    :include_graphs: 
     - "templates/os.basic" 
     - "templates/os.nfs" 
+
+Load dashboard properties from a external YAML file? 
+----------------------------------------------------
+
+If you got a set of common properties that you want to reuse in the 
+dashboard, you can load a external yaml file from in dash.yaml. 
+The path is relative to the _templatedir_ and it does not support 
+recursive includes.
+
+Examples are a list of server colors, timezones, etc. In _dash.yaml_:
+
+    :include_properties: 
+     - "common.yml" 
+     - "black_theme.yml" 
+
+Example _common.yml_:
+
+    :graph_properties: 
+     :timezone:         Europe/London
+     :hide_legend:      false
+
+Example _black.yml_:
+
+    :graph_properties: 
+     :background_color: white
+     :foreground_color: black
+     :vertical_mark_color: "#330000"
 
 Contact?
 --------
