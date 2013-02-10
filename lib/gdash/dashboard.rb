@@ -2,8 +2,7 @@ class GDash
   class Dashboard
     attr_accessor :properties
 
-    def initialize(short_name, dir, options={}, graphite_render="")
-      raise "Cannot find dashboard directory #{dir}" unless File.directory?(dir)
+    def initialize(short_name, graph_templates, category, options={}, graphite_render="")
 
       @properties = {:graph_width => nil,
                      :graph_height => nil,
@@ -11,14 +10,40 @@ class GDash
                      :graph_until => nil}
 
       @properties[:short_name] = short_name
-      @properties[:directory] = File.join(dir, short_name)
-      @properties[:yaml] = File.join(dir, short_name, "dash.yaml")
+      @properties[:graph_templates] = graph_templates
+      @properties[:category] = category
+      @properties[:directory] = File.join(graph_templates, category, short_name)
       @properties[:graphite_render] = graphite_render
 
+      raise "Cannot find dashboard directory #{directory}" unless File.directory?(directory)
 
-      raise "Cannot find YAML file #{yaml}" unless File.exist?(yaml)
+      @properties[:yaml] = File.join(directory, "dash.yaml")
+
+      raise "Cannot find YAML file #{yaml}" unless File.exists?(yaml)
+
 
       @properties.merge!(YAML.load_file(yaml))
+
+      if @properties[:include_properties] == nil || @properties[:include_properties].empty?
+        property_includes = []
+      elsif @properties[:include_properties].is_a? Array
+        property_includes = @properties[:include_properties]
+      elsif @properties[:include_properties].is_a? String
+        property_includes = [@properties[:include_properties]]
+      else
+        raise "Invalid value for include_properties in #{File.join(directory, 'dash.yaml')}"
+      end
+
+      property_includes << options[:include_properties] if options[:include_properties]
+
+      for property_file in property_includes
+        yaml_file = File.join(graph_templates, property_file)
+        if File.exist?(yaml_file)
+          @properties.rmerge!(YAML.load_file(yaml_file))
+        else
+          raise "Missing file #{yaml_file}' for include_properties in #{File.join(directory, 'dash.yaml')}"
+        end
+      end
 
       # Properties defined in dashboard config file are overridden when given on initialization
       @properties[:graph_width] = options.delete(:width) || graph_width
@@ -26,10 +51,37 @@ class GDash
       @properties[:graph_from] = options.delete(:from) || graph_from
       @properties[:graph_until] = options.delete(:until) || graph_until
 
+      if @properties[:include_graphs] == nil || @properties[:include_graphs].empty?
+        graph_includes = []
+      elsif @properties[:include_graphs].is_a? Array
+        graph_includes = @properties[:include_graphs]
+      elsif @properties[:include_graphs].is_a? String
+        graph_includes = [@properties[:include_graphs]]
+      else
+        raise "Invalid value for include in #{File.join(directory, 'dash.yaml')}"
+      end
+
+      @directories = graph_includes.map { |d|
+        File.join(graph_templates, d)
+      }
+      @directories << directory
+
       #Graphite defined in gdash.yaml is overwritten if set in dash.yaml
       if !(@properties[:graphite] == nil || @properties[:graphite].empty?)
         @properties[:graphite_render] = @properties[:graphite]+"/render"
       end
+    end
+
+    def list_graphs
+      graphs = {}
+      @directories.each { |directory|
+        current_graphs = Dir.entries(directory).select {|f| f.match(/\.graph$/)}
+        current_graphs.each { |graph_filename|  
+          graph_name = File.basename(graph_filename, ".graph")
+          graphs[graph_name] = File.join(directory, graph_filename) 
+        }
+      }
+      graphs
     end
 
     def graphs(options={})
@@ -38,12 +90,14 @@ class GDash
       options[:from] ||= graph_from
       options[:until] ||= graph_until
 
-      graphs = Dir.entries(directory).select{|f| f.match(/\.graph$/)}
-
       overrides = options.reject { |k,v| v.nil? }
+      overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
 
-      graphs.sort.map do |graph|
-        {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), overrides)}
+      graphs = list_graphs
+
+      graphs.keys.sort.map do |graph_name|
+        {:name => graph_name, 
+          :graphite => GraphiteGraph.new(graphs[graph_name], overrides)}
       end
     end
 
@@ -53,11 +107,12 @@ class GDash
       options[:from] ||= graph_from
       options[:until] ||= graph_until
 
-      graph = "#{name}.graph"
-
       overrides = options.reject { |k,v| v.nil? }
+      overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
 
-      {:name => File.basename(graph, ".graph"), :graphite => GraphiteGraph.new(File.join(directory, graph), overrides)}
+      graphs = list_graphs
+
+      {:name => name, :graphite => GraphiteGraph.new(graphs[name], overrides)}
     end
 
     def method_missing(method, *args)
@@ -69,3 +124,4 @@ class GDash
     end
   end
 end
+  

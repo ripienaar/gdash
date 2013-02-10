@@ -178,6 +178,66 @@ You can overwrite the default graphite setting from gdash.yaml setting :graphite
 
     :graphite: http://mygraphitehost:80
 
+Additional properties in graphs?
+--------------------------------
+
+You can specify additional properties in the dash.yaml for each dashboard:
+
+    :graph_properties:
+        :environment: dev
+        :servers: [ "server1.domain.com", "server2.domain.com" ]
+        :javaid: 1234
+    
+that can be accessed from the .graph like:
+    
+    servers = @properties[:servers]
+    environment = @properties[:environment]
+    
+    field :iowait, 
+        :alias => "IO Wait #{server}",
+        :data  => "servers.#{environment}.#{servers.join(',')}.cpu*.cpu-{system,wait}.value"
+
+Include graphs from other dashboard?
+------------------------------------
+
+You can include the graphs from other dashboard with the include 
+property in dash.yaml:
+
+    :include_graphs: 
+    - "templates/os.basic" 
+    - "templates/os.nfs" 
+
+Load dashboard properties from a external YAML file? 
+----------------------------------------------------
+
+If you got a set of common properties that you want to reuse in the 
+dashboard, you can load a external yaml file from in dash.yaml. 
+The path is relative to the _templatedir_ and it does not support 
+recursive includes.
+
+Examples are a list of server colors, timezones, etc. In _dash.yaml_:
+
+    :include_properties: 
+     - "common.yml" 
+     - "black-theme.yml" 
+
+Example _common.yml_:
+
+    :graph_properties: 
+     :timezone:         Europe/London
+     :hide_legend:      false
+
+Example _black-theme.yml_:
+
+    :graph_properties: 
+     :background_color: white
+     :foreground_color: black
+     :vertical_mark_color: "#330000"
+
+A external properties files can be also loaded from the url:
+
+  http://graphite.example.net:3000/category_name/dash_name/?include_properties=white-theme.yml
+
 Contact?
 --------
 
