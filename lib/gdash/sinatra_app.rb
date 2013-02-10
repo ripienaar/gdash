@@ -39,8 +39,10 @@ class GDash
       @top_level = Hash.new
       Dir.entries(@graph_templates).each do |category|
         if File.directory?("#{@graph_templates}/#{category}")
+          
           unless ("#{category}" =~ /^\./ )
-            @top_level["#{category}"] = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/#{category}"), {:width => @graph_width, :height => @graph_height})
+            gdash = GDash.new(@graphite_base, "/render/", @graph_templates, category, {:width => @graph_width, :height => @graph_height})
+            @top_level["#{category}"] = gdash unless gdash.dashboards.empty?
           end
         end
       end
