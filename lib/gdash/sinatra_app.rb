@@ -71,9 +71,13 @@ class GDash
       less :"bootstrap/#{params[:name]}", :paths => ["views/bootstrap"]
     end
 
-    get '/:category/:dash/details/:name' do
+    get '/:category/:dash/details/:name/?*' do
+      options = {}
+
+      options.merge!(query_params)
+
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash],options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
@@ -82,7 +86,7 @@ class GDash
         @error = "No intervals defined in configuration"
       end
 
-      if main_graph = @dashboard.graph_by_name(params[:name])
+      if main_graph = @dashboard.graph_by_name(params[:name], options)
         @graphs = @intervals.map do |e|
           new_props = {:from => e[0], :title => "#{main_graph[:graphite].properties[:title]} - #{e[1]}"}
           new_props = main_graph[:graphite].properties.merge new_props
@@ -119,6 +123,8 @@ class GDash
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
       end
 
+      @graphs = @dashboard.graphs(options)
+
       erb :full_size_dashboard, :layout => false
     end
 
@@ -140,6 +146,8 @@ class GDash
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
 
+      @graphs = @dashboard.graphs(options)
+
       erb :dashboard
     end
 
@@ -153,18 +161,26 @@ class GDash
       alias_method :h, :escape_html
 
       def link_to_interval(options)
-        "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/') }\">#{ h(options[:label]) }</a>"
+        qp=""; 
+      	params['p'].each {|k,v| qp+="?p[#{k}]=#{v}"} unless params['p'].nil?
+        "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to]), qp].join('/') }\">#{ h(options[:label]) }</a>"
       end
 
       def query_params
         hash = {}
-        protected_keys = [:category, :dash, :splat]
+        protected_keys = [:category, :dash, :splat, :details, :name]
 
         params.each do |k, v|
+          k = query_alias_map(k)
+          v = v.inject({}) { |memo, e| memo[e[0].to_sym] = e[1]; memo } if v.is_a?(Hash)
           hash[k.to_sym] = v unless protected_keys.include?(k.to_sym)
         end
 
         hash
+      end
+      def query_alias_map(k)
+        q_aliases = {'p' => 'placeholders'}
+        q_aliases[k] || k
       end
     end
   end
