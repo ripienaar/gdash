@@ -238,6 +238,19 @@ A external properties files can be also loaded from the url:
 
   http://graphite.example.net:3000/category_name/dash_name/?include_properties=white-theme.yml
 
+Placeholder Parameters
+----------------
+
+Provide variables in the URL:
+
+  http://graphite.example.net:3000/category_name/dash_name/?p[node]=node.example.net
+
+And use them in the graphs
+
+    field :iowait, 
+        :data  => "servers.%{node}.cpu*.cpu-wait.value"
+
+
 Contact?
 --------
 
