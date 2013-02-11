@@ -22,7 +22,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  graphite_graph (~> 0.0.7)
+  graphite_graph (~> 0.0.8)
   less
   redcarpet
   sinatra

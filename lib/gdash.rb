@@ -33,6 +33,7 @@ class GDash
     options[:from] ||= @from
     options[:until] ||= @until
 
+
     Dashboard.new(name, graph_templates, category, options, graphite_render)
   end
 
