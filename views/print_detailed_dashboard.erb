@@ -23,11 +23,7 @@ setTimeout("window.close();",1000);
           <% graphrows.each do |graph| %>
             <td>
             <% if graph %>
-                <% if graph[:description] %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>' rel="<%= row == 1 ? 'popover-below' : 'popover-above' %>" title="<%= graph[:title] %>" data-content="<%= graph[:description] %>">
-                <% else %>
-                    <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:url]].join "?" %>'>
-                <% end %>
+              <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
             <% end %>
             </td>
           <% end %>
