@@ -71,7 +71,7 @@ class GDash
       less :"bootstrap/#{params[:name]}", :paths => ["views/bootstrap"]
     end
 
-    get '/:category/:dash/details/:name' do
+    get '/:category/:dash/details/:name/?*' do
       options = {}
       if query_params[:print]
         options[:include_properties] = "print.yml"
