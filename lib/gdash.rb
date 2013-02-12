@@ -11,7 +11,7 @@ class GDash
   require 'gdash/sinatra_app'
   require 'graphite_graph'
 
-  attr_reader :graphite_base, :graphite_render, :graph_templates, :category, :dash_templates, :height, :width, :from, :until
+  attr_reader :graphite_base, :graphite_render, :graph_templates, :category, :dash_templates, :sort_dashboards_by, :height, :width, :from, :until
 
   def initialize(graphite_base, render_url, graph_templates, category,  options={})
     @graphite_base = graphite_base
@@ -19,6 +19,7 @@ class GDash
     @graph_templates = graph_templates
     @category = category
     @dash_templates = File.join(graph_templates, category)
+    @sort_dashboards_by = options.delete(:sort_dashboards_by)
     @height = options.delete(:height)
     @width = options.delete(:width)
     @from = options.delete(:from)
@@ -55,6 +56,11 @@ class GDash
       end
     end
 
-    dashboards.sort_by{|d| d[:name].to_s}
+
+    dashboards.sort_by{|d| 
+      sort_dashboards_by.map {|field|
+        d[field.to_sym].to_s
+      }
+    }
   end
 end
