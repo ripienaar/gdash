@@ -73,7 +73,13 @@ class GDash
 
     get '/:category/:dash/details/:name/?*' do
       options = {}
-
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+          :background_color => "white",
+          :foreground_color => "black"
+          }
+      end
       options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
@@ -98,7 +104,11 @@ class GDash
         @error = "No such graph available"
       end
 
-      erb :detailed_dashboard
+      if !query_params[:print]
+        erb :detailed_dashboard
+      else
+        erb :print_detailed_dashboard, :layout => false
+      end
     end
 
     get '/:category/:dash/full/?*' do
@@ -114,8 +124,6 @@ class GDash
         options[:width] = @graph_width
         options[:height] = @graph_height
       end
-
-      options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
@@ -138,6 +146,13 @@ class GDash
           options[:until] = params["splat"][2] || "now"
         end
 
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+          :background_color => "white",
+          :foreground_color => "black"
+          }
+      end
       options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
@@ -148,7 +163,11 @@ class GDash
 
       @graphs = @dashboard.graphs(options)
 
-      erb :dashboard
+      if !query_params[:print]
+        erb :dashboard
+      else
+        erb :print_dashboard, :layout => false
+      end
     end
 
     get '/docs/' do
@@ -178,10 +197,19 @@ class GDash
 
         hash
       end
+
       def query_alias_map(k)
         q_aliases = {'p' => 'placeholders'}
         q_aliases[k] || k
       end
+
+      def link_to_print
+        uri =  URI.parse(request.path)
+        new_query_ar = URI.decode_www_form(request.query_string) << ["print", "1"]
+        uri.query = URI.encode_www_form(new_query_ar)
+        uri.to_s
+      end
+    
     end
   end
 end
