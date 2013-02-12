@@ -1,16 +1,18 @@
 <% unless @error %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+<% span=12/@graph_columns %>
 <div class="row">
-  <% span="span#{12/@graph_columns}" %>
-  <% @graph_columns.times do |column| %>
-      <div class="row <%=span%>">
-      <% @graphs.each_with_index do |graph,i| %>
-        <% if graph and i%@graph_columns==column%>
+<% @graphs.each_with_index do |graph,i| %>
+  <% if graph %>
+    <% if i>0 and i%@graph_columns==0 %>
+       </div>
+       <div class="row">
+    <%end%>
+        <div class="span<%=span%>" >
           <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
-        <% end %>
-      <% end %>
-      </div>
+        </div>
   <% end %>
+<% end %>
 </div>
 <script>
     $(function () {
