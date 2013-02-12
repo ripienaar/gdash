@@ -1,3 +1,5 @@
+require 'cgi'
+
 class GDash
   class SinatraApp < ::Sinatra::Base
     def initialize(graphite_base, graph_templates, options = {})
@@ -203,10 +205,21 @@ class GDash
         q_aliases[k] || k
       end
 
+      def query_params_encode(query_params) 
+        query_params.map{ |k,v|
+          # Must support multivalue
+          if v.is_a? Array  
+            v.map{ |v2| [k.to_s,CGI.escape(v2)].join('=') }.join('&')
+          else
+            [k.to_s,CGI.escape(v)].join('=')
+          end  
+        }.join('&')
+      end
+
       def link_to_print
-        uri =  URI.parse(request.path)
-        new_query_ar = URI.decode_www_form(request.query_string) << ["print", "1"]
-        uri.query = URI.encode_www_form(new_query_ar)
+        uri = URI.parse(request.path)
+        new_query_ar = CGI.parse(request.query_string).merge! "print" => "1"
+        uri.query = query_params_encode(new_query_ar)
         uri.to_s
       end
     
