@@ -127,6 +127,9 @@ class GDash
         options[:height] = @graph_height
       end
 
+      options[:from] = params[:from] if params[:from]
+      options[:until] = params[:until] if params[:until]
+
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
