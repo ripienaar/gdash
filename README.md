@@ -251,6 +251,27 @@ And use them in the graphs
     field :iowait, 
         :data  => "servers.%{node}.cpu*.cpu-wait.value"
 
+Force a different order for dashboards or graphs?
+-------------------------------------------------
+
+If you got a lot of dashboards per group or category, maybe you want to change the order
+they appear in the menus. For this you can use the option _:sort_dashboards_by:_ in _config/gdash.yaml_.
+You can use any property defined in _dash.yaml_. Use 'dirname' for the dashboard directory. 
+Default is sort by 'name'. e.g: 
+
+  :sort_dashboards_by: [ name ] 
+  
+  :sort_dashboards_by: [ dirname ]   
+
+  :sort_dashboards_by: [ weight, name ]   
+
+You can specify the order of the graphs per dashboard, adding the property _:sort_graphs_by:_ 
+in the _dash.yaml_. You can use any property of in the graph, even any added with 
+_properties[:extra_property] = value_. 
+Use 'filename' for the graph file name. Default is sort by filename. e.g: 
+
+  :sort_dashboards_by: [ weight, name ]   
+
 Contact?
 --------
 
