@@ -251,7 +251,7 @@ You can create an optional YAML file _templatedir/print.yml_ that will be loaded
 This way you can override additional properties or use custom colors for printing.
 
 Placeholder Parameters
-----------------
+----------------------
 
 Provide variables in the URL:
 
@@ -261,6 +261,15 @@ And use them in the graphs
 
     field :iowait, 
         :data  => "servers.%{node}.cpu*.cpu-wait.value"
+
+It will also override any graph properties as in the :graph_properties: in dash.yaml, so
+the value can be accessed using the @properties hash:
+
+    node = @properties[:node]
+
+Also can be used to override graph properties like the timezone:
+
+  http://graphite.example.net:3000/category_name/dash_name/?p[timezone]=CET
 
 Contact?
 --------
