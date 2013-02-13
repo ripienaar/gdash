@@ -56,7 +56,6 @@ class GDash
       end
     end
 
-
     dashboards.sort_by{|d| 
       sort_dashboards_by.map {|field|
         d[field.to_sym].to_s
