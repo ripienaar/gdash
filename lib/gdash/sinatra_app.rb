@@ -1,3 +1,5 @@
+require 'cgi'
+
 class GDash
   class SinatraApp < ::Sinatra::Base
     def initialize(graphite_base, graph_templates, options = {})
@@ -76,7 +78,13 @@ class GDash
 
     get '/:category/:dash/details/:name/?*' do
       options = {}
-
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+          :background_color => "white",
+          :foreground_color => "black"
+          }
+      end
       options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
@@ -101,7 +109,11 @@ class GDash
         @error = "No such graph available"
       end
 
-      erb :detailed_dashboard
+      if !query_params[:print]
+        erb :detailed_dashboard
+      else
+        erb :print_detailed_dashboard, :layout => false
+      end
     end
 
     get '/:category/:dash/full/?*' do
@@ -117,8 +129,6 @@ class GDash
         options[:width] = @graph_width
         options[:height] = @graph_height
       end
-
-      options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
@@ -141,6 +151,13 @@ class GDash
           options[:until] = params["splat"][2] || "now"
         end
 
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+          :background_color => "white",
+          :foreground_color => "black"
+          }
+      end
       options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
@@ -151,7 +168,11 @@ class GDash
 
       @graphs = @dashboard.graphs(options)
 
-      erb :dashboard
+      if !query_params[:print]
+        erb :dashboard
+      else
+        erb :print_dashboard, :layout => false
+      end
     end
 
     get '/docs/' do
@@ -181,10 +202,30 @@ class GDash
 
         hash
       end
+
       def query_alias_map(k)
         q_aliases = {'p' => 'placeholders'}
         q_aliases[k] || k
       end
+
+      def query_params_encode(query_params) 
+        query_params.map{ |k,v|
+          # Must support multivalue
+          if v.is_a? Array  
+            v.map{ |v2| [k.to_s,CGI.escape(v2)].join('=') }.join('&')
+          else
+            [k.to_s,CGI.escape(v)].join('=')
+          end  
+        }.join('&')
+      end
+
+      def link_to_print
+        uri = URI.parse(request.path)
+        new_query_ar = CGI.parse(request.query_string).merge! "print" => "1"
+        uri.query = query_params_encode(new_query_ar)
+        uri.to_s
+      end
+    
     end
   end
 end

@@ -41,12 +41,11 @@ class GDash
         yaml_file = File.join(graph_templates, property_file)
         if File.exist?(yaml_file)
           @properties.rmerge!(YAML.load_file(yaml_file))
-        else
-          raise "Missing file #{yaml_file}' for include_properties in #{File.join(directory, 'dash.yaml')}"
         end
       end
-
+ 	
       # Properties defined in dashboard config file are overridden when given on initialization
+      @properties.rmerge!(options)
       @properties[:graph_width] = options.delete(:width) || graph_width
       @properties[:graph_height] = options.delete(:height) || graph_height
       @properties[:graph_from] = options.delete(:from) || graph_from

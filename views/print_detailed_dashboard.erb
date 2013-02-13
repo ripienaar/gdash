@@ -1,0 +1,38 @@
+<html>
+<head>
+    <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
+    <script language=Javascript>
+window.print();
+ClosePrint();
+function ClosePrint( )
+{
+setTimeout("window.close();",1000);
+}
+    </script>
+</head>
+<body bgcolor="white">
+<% if @error %>
+   <h2><%= @error %></h2>
+<% else %>
+<h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+<div class="row">
+    <table>
+        <% row = 1 %>
+        <% @graphs.in_groups_of(@graph_columns) do |graphrows| %>
+          <tr>
+          <% graphrows.each do |graph| %>
+            <td>
+            <% if graph %>
+              <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
+            <% end %>
+            </td>
+          <% end %>
+	  </tr>
+          <% row += 1 %>
+        <% end %>
+    </table>
+</div>
+<% end %>
+</body>
+</html>
+

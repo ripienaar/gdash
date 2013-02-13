@@ -239,6 +239,18 @@ A external properties files can be also loaded from the url:
 
   http://graphite.example.net:3000/category_name/dash_name/?include_properties=white-theme.yml
 
+Special properties when printing?
+---------------------------------
+
+When printing these properties will be overrided:  
+
+    :graph_properties: 
+     :background_color: white
+     :foreground_color: black
+
+You can create an optional YAML file _templatedir/print.yml_ that will be loaded when printing.
+This way you can override additional properties or use custom colors for printing.
+
 Placeholder Parameters
 ----------------
 
