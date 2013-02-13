@@ -103,7 +103,7 @@ class GDash
       
       graph_instances.sort_by{|g| 
         sort_graphs_by.map {|field|
-          if field.to_sym == :file
+          if field.to_sym == :filename
             g[:name].to_s
           else
             g[:graphite].properties[field.to_sym].to_s
