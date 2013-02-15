@@ -4,7 +4,7 @@ class Array
       if block_given?
         self.each{|a| yield([a])}
       else
-        self
+        self.collect{|a| [a]}
       end
     else
       arr = self.clone
