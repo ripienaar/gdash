@@ -52,6 +52,16 @@ class GDash
       super()
     end
 
+    before do
+
+      # To build a list for Typeahead Search
+      @search_elements = []
+      @top_level.keys.each do |dash|
+        @top_level[dash].dashboards.each { |d| @search_elements << d[:name]}
+      end
+
+    end
+
     set :static, true
     set :views, File.join(File.expand_path(File.dirname(__FILE__)), "../..", "views")
     if Sinatra.const_defined?("VERSION") && Gem::Version.new(Sinatra::VERSION) >= Gem::Version.new("1.3.0")
@@ -66,6 +76,25 @@ class GDash
       end
 
       erb :index
+    end
+
+    get '/search?*' do 
+      dashboard = params['dashboard']
+      mapper = []
+      @top_level.keys.each do |k|
+        @top_level[k].dashboards.each do |d|
+          mapper << {"name" => d[:name], "link" => d[:link], "top_level" => k } #"#{k}/#{d[:name]}"
+        end
+      end
+      result = mapper.select {|d| d["name"] == dashboard}
+      require 'pp'
+      pp result
+      if result.count == 0 then
+        @error = "No dashboards found in the templates directory, Search = <b>#{dashboard}</b>"
+        erb :index 
+      elsif result.count == 1
+        redirect "#{result[0]["top_level"]}/#{result[0]["link"]}"
+      end
     end
 
     Less.paths << File.join(settings.views, 'bootstrap')
