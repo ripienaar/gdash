@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  setDatesFromSessionStorage();
-  hideDateTimePicker();
+  if(!setDatesFromSessionStorage())
+    hideDateTimePicker();
 });
 
 $(function() {
@@ -37,8 +37,10 @@ function setDatesFromSessionStorage() {
     if(value) {
       $('#dt_from').val(formatSelectedDate(new Date(value.from)));
       $('#dt_to').val(formatSelectedDate(new Date(value.to)));
+      return true;
     }
   }
+  return false;
 }
 
 function formatSelectedDate(date) {
