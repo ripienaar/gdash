@@ -9,31 +9,27 @@ $(function() {
   var endDateTextBox = $('#dt_to');
   startDateTextBox.datetimepicker({ 
     onClose: function(dateText, inst) {
-      if (endDateTextBox.val() != '') {
-        var testStartDate = startDateTextBox.datetimepicker('getDate');
-        var testEndDate = endDateTextBox.datetimepicker('getDate');
-        if (testStartDate > testEndDate)
-          endDateTextBox.datetimepicker('setDate', testStartDate);
-      }
-      else {
-        endDateTextBox.val(dateText);
-      }
+      setDestinationDate(startDateTextBox, endDateTextBox, dateText);
     }
   });
   endDateTextBox.datetimepicker({ 
     onClose: function(dateText, inst) {
-      if (startDateTextBox.val() != '') {
-        var testStartDate = startDateTextBox.datetimepicker('getDate');
-        var testEndDate = endDateTextBox.datetimepicker('getDate');
-        if (testStartDate > testEndDate)
-          startDateTextBox.datetimepicker('setDate', testEndDate);
-      }
-      else {
-        startDateTextBox.val(dateText);
-      }
+      setDestinationDate(endDateTextBox, startDateTextBox, dateText);
     }
   });
 });
+
+function setDestinationDate(srcDateBox, destDateBox, dateText)
+{
+  if (destDateBox.val() == '')
+    destDateBox.value(dateText);
+  else {
+    var startDate = $('#dt_from').datetimepicker('getDate');
+    var endDate = $('#dt_to').datetimepicker('getDate');
+    if (startDate > endDate)
+      destDateBox.datetimepicker('setDate', srcDateBox.datetimepicker('getDate'));
+  }
+}
 
 function setDateFromCookie() {
   value = $.cookie("dateSelected")
