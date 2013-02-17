@@ -1,6 +1,5 @@
 $(document).ready(function() {
-  $.cookie.json = true
-  setDateFromCookie();
+  setDatesFromSessionStorage();
   hideDateTimePicker();
 });
 
@@ -21,8 +20,8 @@ $(function() {
 
 function setDestinationDate(srcDateBox, destDateBox, dateText)
 {
-  if (destDateBox.val() == '')
-    destDateBox.value(dateText);
+  if (destDateBox.val() == destDateBox.prop("defaultValue"))
+    destDateBox.val(dateText);
   else {
     var startDate = $('#dt_from').datetimepicker('getDate');
     var endDate = $('#dt_to').datetimepicker('getDate');
@@ -31,11 +30,14 @@ function setDestinationDate(srcDateBox, destDateBox, dateText)
   }
 }
 
-function setDateFromCookie() {
-  value = $.cookie("dateSelected")
-  if(value) {
-    $('#dt_from').val(formatSelectedDate(new Date(value.from)));
-    $('#dt_to').val(formatSelectedDate(new Date(value.to)));
+function setDatesFromSessionStorage() {
+  if(sessionStorage['dates'])
+  {
+    value = JSON.parse(sessionStorage['dates']);
+    if(value) {
+      $('#dt_from').val(formatSelectedDate(new Date(value.from)));
+      $('#dt_to').val(formatSelectedDate(new Date(value.to)));
+    }
   }
 }
 
@@ -47,9 +49,9 @@ function formatSelectedDate(date) {
     zeroPad(date.getMinutes());
 }
 
-function storeDatesToCookie(dt_from, dt_to) {
-  value = { from: dt_from, to: dt_to }
-  $.cookie('dateSelected', value , { expires: 14, path: '/' });
+function storeDatesToSessionStorage(dt_from, dt_to) {
+  value = { from: dt_from, to: dt_to };
+  sessionStorage['dates'] = JSON.stringify(value);
 }
 
 function hideDateTimePicker() {
@@ -62,7 +64,7 @@ function hideDateTimePicker() {
 function selectDt() {
   dt_from = $('#dt_from').datetimepicker('getDate');
   dt_to = $('#dt_to').datetimepicker('getDate');
-  storeDatesToCookie(dt_from, dt_to);
+  storeDatesToSessionStorage(dt_from, dt_to);
   window.location = buildGraphiteDateUrl(dt_from, dt_to);
   return true;
 }
