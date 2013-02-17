@@ -87,8 +87,6 @@ class GDash
         end
       end
       result = mapper.select {|d| d["name"] == dashboard}
-      require 'pp'
-      pp result
       if result.count == 0 then
         @error = "No dashboards found in the templates directory, Search = <b>#{dashboard}</b>"
         erb :index 
