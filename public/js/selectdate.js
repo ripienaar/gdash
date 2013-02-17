@@ -18,9 +18,6 @@ $(function() {
       else {
         endDateTextBox.val(dateText);
       }
-    },
-    onSelect: function (selectedDateTime){
-      endDateTextBox.datetimepicker('option', 'minDate', startDateTextBox.datetimepicker('getDate') );
     }
   });
   endDateTextBox.datetimepicker({ 
@@ -34,9 +31,6 @@ $(function() {
       else {
         startDateTextBox.val(dateText);
       }
-    },
-    onSelect: function (selectedDateTime){
-      startDateTextBox.datetimepicker('option', 'maxDate', endDateTextBox.datetimepicker('getDate') );
     }
   });
 });
