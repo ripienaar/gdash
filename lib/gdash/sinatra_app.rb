@@ -135,6 +135,7 @@ class GDash
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
       end
+      options.merge!(query_params)
 
       @graphs = @dashboard.graphs(options)
 

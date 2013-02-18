@@ -15,22 +15,19 @@ setTimeout("window.close();",1000);
    <h2><%= @error %></h2>
 <% else %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+<% span=12/@graph_columns %>
 <div class="row">
-    <table>
-        <% row = 1 %>
-        <% @graphs.in_groups_of(@graph_columns) do |graphrows| %>
-          <tr>
-          <% graphrows.each do |graph| %>
-            <td>
-            <% if graph %>
-              <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
-            <% end %>
-            </td>
-          <% end %>
-	  </tr>
-          <% row += 1 %>
-        <% end %>
-    </table>
+<% @graphs.each_with_index do |graph,i| %>
+  <% if graph %>
+    <% if i>0 and i%@graph_columns==0 %>
+       </div>
+       <div class="row">
+    <%end%>
+        <div align=center class="span<%=span%>" >
+          <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
+        </div>
+  <% end %>
+<% end %>
 </div>
 <% end %>
 </body>
