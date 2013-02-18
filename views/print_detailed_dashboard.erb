@@ -1,7 +1,10 @@
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
     <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
     <script language=Javascript>
+<link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
+
 window.print();
 ClosePrint();
 function ClosePrint( )
@@ -23,7 +26,7 @@ setTimeout("window.close();",1000);
        </div>
        <div class="row">
     <%end%>
-        <div align=center class="span<%=span%>" >
+        <div class="span<%=span%>" >
           <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
         </div>
   <% end %>

@@ -1,7 +1,9 @@
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
     <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
     <script language=Javascript>
+<link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
 window.print();
 ClosePrint();
 function ClosePrint( )
@@ -16,12 +18,12 @@ setTimeout("window.close();",1000);
 <body bgcolor="white">
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <% span=12/@graph_columns %>
-<div align=center class="row">
+<div class="row">
 <% @graphs.each_with_index do |graph,i| %>
   <% if graph %>
     <% if i>0 and i%@graph_columns==0 %>
        </div>
-       <div align=center class="row">
+       <div class="row">
     <%end%>
         <div class="span<%=span%>" >
         <%= erb(:graph, :locals => { :graph => graph}) %>
