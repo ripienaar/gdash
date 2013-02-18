@@ -213,13 +213,13 @@
           break
 
         case 38: // up arrow
-          if (e.type != 'keydown') break
+          //if (e.type != 'keydown') break
           e.preventDefault()
           this.prev()
           break
 
         case 40: // down arrow
-          if (e.type != 'keydown') break
+          //if (e.type != 'keydown') break
           e.preventDefault()
           this.next()
           break
