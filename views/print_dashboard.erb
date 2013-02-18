@@ -1,5 +1,6 @@
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
     <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
     <script language=Javascript>
 window.print();
@@ -15,20 +16,20 @@ setTimeout("window.close();",1000);
 <% else %>
 <body bgcolor="white">
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
-
-<table width="100%" height="100%">
-    <% @graphs.in_groups_of(@graph_columns) do |graphrows| %>
-        <tr>
-        <% graphrows.each do |graph| %>
-            <td valign="middle" align="center">
-            <% if graph %>
-                <img src='<%= [@top_level[@params[:category]].graphite_render, graph[:graphite][:url]].join "?" %>'>
-            <% end %>
-            </td>
-        <% end %>
-        </tr>
-    <% end %>
-</table>
+<% span=12/@graph_columns %>
+<div class="row">
+<% @graphs.each_with_index do |graph,i| %>
+  <% if graph %>
+    <% if i>0 and i%@graph_columns==0 %>
+       </div>
+       <div class="row">
+    <%end%>
+        <div class="span<%=span%>" >
+        <%= erb(:graph, :locals => { :graph => graph}) %>
+        </div>
+  <% end %>
+<% end %>
+</div>
 <script>
     $(document).ready(function() {
         setInterval(reloadDash, <%= @refresh_rate * 1000 %>);
