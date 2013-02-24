@@ -127,7 +127,7 @@ class GDash
       options = {}
       params["splat"] = params["splat"].first.split("/")
 
-      t_from = t_unil = nil
+      t_from = t_until = nil
       if request.cookies["date"]
         cookie_date = JSON.parse(request.cookies["date"], {:symbolize_names => true})
         t_from = params[:from] || cookie_date[:from]
