@@ -5,8 +5,7 @@
   <li><a id="toggleDateTimePicker" href="#">Select Date</a></li>
 </ul>
 <ul class="nav" id="dateTimePicker">
-  <li><input type="text"  name="dt_from" id="dt_from" value="from"/></li>
-  <li><input type="text" name="dt_to" id="dt_to" value="until"/></li>
-  <li><button type="button" class="btn" onClick="clearDt()">Reset</button>
-  <button type="button" class="btn" onClick="selectDt()">Show</button></li>
+  <li><input type="text"  name="dt_from" id="dt_from" value="<%= @interval_filters.select { |i| @dashboard.graph_from == i[:from] }.count > 0 ? 'from' : fmt_for_select_date(@dashboard.graph_from, 'from') %>"/></li>
+  <li><input type="text" name="dt_to" id="dt_to" value="<%= @interval_filters.select { |i| @dashboard.graph_from == i[:from]}.count > 0 ? 'until' : fmt_for_select_date(@dashboard.graph_until, 'until') %>"/></li>
+  <li><button type="button" class="btn" onClick="selectDt()">Show</button></li>
 </ul>

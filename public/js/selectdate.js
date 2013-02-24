@@ -1,15 +1,8 @@
 $(document).ready(function() {
-  if(!setDatesFromSessionStorage())
-  {
-    $('#toggleDateTimePicker').parent().removeClass('active');
-    $('#dateTimePicker').hide();
-  }
+  if($('#dt_from').val() != 'from')
+    $('#toggleDateTimePicker').parent().addClass('active');
   else
-  {
-    if (!document.URL.match(/time\//))
-      $('#toggleDateTimePicker').parent().addClass('active');
-    reloadPageWithDates();
-  }
+    $('#dateTimePicker').hide();
 });
 
 $(function() {
@@ -21,28 +14,19 @@ $(function() {
 $(function() {
   var startDateTextBox = $('#dt_from');
   var endDateTextBox = $('#dt_to');
-  startDateTextBox.datetimepicker({ 
+  startDateTextBox.datetimepicker({
+    dateFormat: 'yy-mm-dd',
     onClose: function(dateText, inst) {
       setDestinationDate(startDateTextBox, endDateTextBox, dateText);
     }
   });
   endDateTextBox.datetimepicker({ 
+    dateFormat: 'yy-mm-dd',
     onClose: function(dateText, inst) {
       setDestinationDate(endDateTextBox, startDateTextBox, dateText);
     }
   });
 });
-
-function reloadPageWithDates()
-{
-  if (sessionStorageHasDates() && !document.URL.match(/time\//) && !getURLParameter("from") && !getURLParameter("until")) {
-    value = JSON.parse(sessionStorage['dates']);
-    dt_from = new Date(value.from);
-    dt_to = new Date(value.to);
-    window.location = buildGraphiteDateUrl(dt_from, dt_to);
-    return true;
-  }
-}
 
 function getURLParameter(name) {
   return decodeURIComponent(
@@ -62,21 +46,6 @@ function setDestinationDate(srcDateBox, destDateBox, dateText)
   }
 }
 
-function setDatesFromSessionStorage() {
-  if(sessionStorageHasDates())
-  {
-    value = JSON.parse(sessionStorage['dates']);
-    $('#dt_from').val(formatSelectedDate(new Date(value.from)));
-    $('#dt_to').val(formatSelectedDate(new Date(value.to)));
-    return true;
-  }
-  return false;
-}
-
-function sessionStorageHasDates() {
-  return sessionStorage['dates'] && JSON.parse(sessionStorage['dates']);
-}
-
 function formatSelectedDate(date) {
   return "" + zeroPad(date.getMonth() + 1) + "/" + 
     zeroPad(date.getDate()) + "/" 
@@ -85,22 +54,10 @@ function formatSelectedDate(date) {
     zeroPad(date.getMinutes());
 }
 
-function storeDatesToSessionStorage(dt_from, dt_to) {
-  value = { from: dt_from, to: dt_to };
-  sessionStorage['dates'] = JSON.stringify(value);
-}
-
 function selectDt() {
   dt_from = $('#dt_from').datetimepicker('getDate');
   dt_to = $('#dt_to').datetimepicker('getDate');
-  storeDatesToSessionStorage(dt_from, dt_to);
   window.location = buildGraphiteDateUrl(dt_from, dt_to);
-  return true;
-}
-
-function clearDt() {
-  sessionStorage.removeItem("dates");
-  window.location = document.URL.replace(/(\?*&from=|\?*&until=).+/g,'');
   return true;
 }
 

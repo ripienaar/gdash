@@ -1,3 +1,5 @@
+require 'json'
+
 class GDash
   class SinatraApp < ::Sinatra::Base
     def initialize(graphite_base, graph_templates, options = {})
@@ -121,14 +123,31 @@ class GDash
     end
 
     get '/:category/:dash/?*' do
+
       options = {}
       params["splat"] = params["splat"].first.split("/")
 
+      t_from = t_unil = nil
+      if request.cookies["date"]
+        cookie_date = JSON.parse(request.cookies["date"], {:symbolize_names => true})
+        t_from = params[:from] || cookie_date[:from]
+        t_until = params[:until] || cookie_date[:until]
+      end
+
       case params["splat"][0]
         when 'time'
-          options[:from] = params["splat"][1] || "-1hour"
-          options[:until] = params["splat"][2] || "now"
+          t_from = params["splat"][1] || t_from || "-1hour"
+          t_until = params["splat"][2] || t_until || "now"
         end
+
+      options[:from] = t_from
+      options[:until] = t_until
+
+      response.set_cookie('date',
+        :expires => Time.at(0),
+        :path => "/",
+        :value => { "from" => t_from, "until" => t_until }.to_json
+      )
 
       options.merge!(query_params)
 
@@ -163,6 +182,16 @@ class GDash
         end
 
         hash
+      end
+
+      def fmt_for_select_date(date, default)
+        result = ""
+        if date.nil? 
+          result = default
+        else 
+          result = DateTime.parse(date).strftime("%Y-%m-%d %H:%M")
+        end
+        return result
       end
     end
   end
