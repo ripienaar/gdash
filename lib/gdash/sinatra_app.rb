@@ -1,3 +1,5 @@
+require 'cgi'
+
 class GDash
   class SinatraApp < ::Sinatra::Base
     def initialize(graphite_base, graph_templates, options = {})
@@ -39,8 +41,10 @@ class GDash
       @top_level = Hash.new
       Dir.entries(@graph_templates).each do |category|
         if File.directory?("#{@graph_templates}/#{category}")
+          
           unless ("#{category}" =~ /^\./ )
-            @top_level["#{category}"] = GDash.new(@graphite_base, "/render/", File.join(@graph_templates, "/#{category}"), {:width => @graph_width, :height => @graph_height})
+            gdash = GDash.new(@graphite_base, "/render/", @graph_templates, category, {:width => @graph_width, :height => @graph_height})
+            @top_level["#{category}"] = gdash unless gdash.dashboards.empty?
           end
         end
       end
@@ -69,9 +73,19 @@ class GDash
       less :"bootstrap/#{params[:name]}", :paths => ["views/bootstrap"]
     end
 
-    get '/:category/:dash/details/:name' do
+    get '/:category/:dash/details/:name/?*' do
+      options = {}
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+          :background_color => "white",
+          :foreground_color => "black"
+          }
+      end
+      options.merge!(query_params)
+
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
-        @dashboard = @top_level[@params[:category]].dashboard(params[:dash])
+        @dashboard = @top_level[@params[:category]].dashboard(params[:dash],options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
@@ -80,7 +94,7 @@ class GDash
         @error = "No intervals defined in configuration"
       end
 
-      if main_graph = @dashboard.graph_by_name(params[:name])
+      if main_graph = @dashboard.graph_by_name(params[:name], options)
         @graphs = @intervals.map do |e|
           new_props = {:from => e[0], :title => "#{main_graph[:graphite].properties[:title]} - #{e[1]}"}
           new_props = main_graph[:graphite].properties.merge new_props
@@ -92,7 +106,11 @@ class GDash
         @error = "No such graph available"
       end
 
-      erb :detailed_dashboard
+      if !query_params[:print]
+        erb :detailed_dashboard
+      else
+        erb :print_detailed_dashboard, :layout => false
+      end
     end
 
     get '/:category/:dash/full/?*' do
@@ -109,13 +127,17 @@ class GDash
         options[:height] = @graph_height
       end
 
-      options.merge!(query_params)
+      options[:from] = params[:from] if params[:from]
+      options[:until] = params[:until] if params[:until]
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
       end
+      options.merge!(query_params)
+
+      @graphs = @dashboard.graphs(options)
 
       erb :full_size_dashboard, :layout => false
     end
@@ -130,6 +152,13 @@ class GDash
           options[:until] = params["splat"][2] || "now"
         end
 
+      if query_params[:print]
+        options[:include_properties] = "print.yml"
+        options[:graph_properties] = { 
+          :background_color => "white",
+          :foreground_color => "black"
+          }
+      end
       options.merge!(query_params)
 
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
@@ -138,7 +167,13 @@ class GDash
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
       end
 
-      erb :dashboard
+      @graphs = @dashboard.graphs(options)
+
+      if !query_params[:print]
+        erb :dashboard
+      else
+        erb :print_dashboard, :layout => false
+      end
     end
 
     get '/docs/' do
@@ -151,19 +186,47 @@ class GDash
       alias_method :h, :escape_html
 
       def link_to_interval(options)
-        "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/') }\">#{ h(options[:label]) }</a>"
+        qp=""; 
+      	params['p'].each {|k,v| qp+="?p[#{k}]=#{v}"} unless params['p'].nil?
+        "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to]), qp].join('/') }\">#{ h(options[:label]) }</a>"
       end
 
       def query_params
         hash = {}
-        protected_keys = [:category, :dash, :splat]
+        protected_keys = [:category, :dash, :splat, :details, :name]
 
         params.each do |k, v|
+          k = query_alias_map(k)
+          v = v.inject({}) { |memo, e| memo[e[0].to_sym] = e[1]; memo } if v.is_a?(Hash)
           hash[k.to_sym] = v unless protected_keys.include?(k.to_sym)
         end
 
         hash
       end
+
+      def query_alias_map(k)
+        q_aliases = {'p' => 'placeholders'}
+        q_aliases[k] || k
+      end
+
+      def query_params_encode(query_params) 
+        query_params.map{ |k,v|
+          # Must support multivalue
+          if v.is_a? Array  
+            v.map{ |v2| [k.to_s,CGI.escape(v2)].join('=') }.join('&')
+          else
+            [k.to_s,CGI.escape(v)].join('=')
+          end  
+        }.join('&')
+      end
+
+      def link_to_print
+        uri = URI.parse(request.path)
+        new_query_ar = CGI.parse(request.query_string).merge! "print" => "1"
+        uri.query = query_params_encode(new_query_ar)
+        uri.to_s
+      end
+    
     end
   end
 end
