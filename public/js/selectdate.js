@@ -1,51 +1,48 @@
 $(document).ready(function() {
-  $.cookie.json = true
-  setDateFromCookie();
-  hideDateTimePicker();
+  if($('#dt_from').val() != 'from')
+    $('#toggleDateTimePicker').parent().addClass('active');
+  else
+    $('#dateTimePicker').hide();
+});
+
+$(function() {
+  $('#toggleDateTimePicker').click(function() {
+    $('#dateTimePicker').toggle(400);
+  });
 });
 
 $(function() {
   var startDateTextBox = $('#dt_from');
   var endDateTextBox = $('#dt_to');
-  startDateTextBox.datetimepicker({ 
+  startDateTextBox.datetimepicker({
+    dateFormat: 'yy-mm-dd',
     onClose: function(dateText, inst) {
-      if (endDateTextBox.val() != '') {
-        var testStartDate = startDateTextBox.datetimepicker('getDate');
-        var testEndDate = endDateTextBox.datetimepicker('getDate');
-        if (testStartDate > testEndDate)
-          endDateTextBox.datetimepicker('setDate', testStartDate);
-      }
-      else {
-        endDateTextBox.val(dateText);
-      }
-    },
-    onSelect: function (selectedDateTime){
-      endDateTextBox.datetimepicker('option', 'minDate', startDateTextBox.datetimepicker('getDate') );
+      setDestinationDate(startDateTextBox, endDateTextBox, dateText);
     }
   });
   endDateTextBox.datetimepicker({ 
+    dateFormat: 'yy-mm-dd',
     onClose: function(dateText, inst) {
-      if (startDateTextBox.val() != '') {
-        var testStartDate = startDateTextBox.datetimepicker('getDate');
-        var testEndDate = endDateTextBox.datetimepicker('getDate');
-        if (testStartDate > testEndDate)
-          startDateTextBox.datetimepicker('setDate', testEndDate);
-      }
-      else {
-        startDateTextBox.val(dateText);
-      }
-    },
-    onSelect: function (selectedDateTime){
-      startDateTextBox.datetimepicker('option', 'maxDate', endDateTextBox.datetimepicker('getDate') );
+      setDestinationDate(endDateTextBox, startDateTextBox, dateText);
     }
   });
 });
 
-function setDateFromCookie() {
-  value = $.cookie("dateSelected")
-  if(value) {
-    $('#dt_from').val(formatSelectedDate(new Date(value.from)));
-    $('#dt_to').val(formatSelectedDate(new Date(value.to)));
+function getURLParameter(name) {
+  return decodeURIComponent(
+    (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,""])[1]
+  );
+}
+
+function setDestinationDate(srcDateBox, destDateBox, dateText)
+{
+  if (destDateBox.val() == destDateBox.prop("defaultValue"))
+    destDateBox.val(dateText);
+  else {
+    var startDate = $('#dt_from').datetimepicker('getDate');
+    var endDate = $('#dt_to').datetimepicker('getDate');
+    if (startDate > endDate)
+      destDateBox.datetimepicker('setDate', srcDateBox.datetimepicker('getDate'));
   }
 }
 
@@ -57,22 +54,9 @@ function formatSelectedDate(date) {
     zeroPad(date.getMinutes());
 }
 
-function storeDatesToCookie(dt_from, dt_to) {
-  value = { from: dt_from, to: dt_to }
-  $.cookie('dateSelected', value , { expires: 14, path: '/' });
-}
-
-function hideDateTimePicker() {
-  $('#dateTimePicker').hide();
-  $('#toggleDateTimePicker').click(function() {
-    $('#dateTimePicker').toggle(400);
-  });
-}
-
 function selectDt() {
   dt_from = $('#dt_from').datetimepicker('getDate');
   dt_to = $('#dt_to').datetimepicker('getDate');
-  storeDatesToCookie(dt_from, dt_to);
   window.location = buildGraphiteDateUrl(dt_from, dt_to);
   return true;
 }
