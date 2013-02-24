@@ -149,8 +149,8 @@ class GDash
       params["splat"] = params["splat"].first.split("/")
 
       t_from = t_until = nil
-      if request.cookies["date"]
-        cookie_date = JSON.parse(request.cookies["date"], {:symbolize_names => true})
+      if request.cookies["interval"]
+        cookie_date = JSON.parse(request.cookies["interval"], {:symbolize_names => true})
         t_from = params[:from] || cookie_date[:from]
         t_until = params[:until] || cookie_date[:until]
       end
@@ -164,7 +164,7 @@ class GDash
       options[:from] = t_from
       options[:until] = t_until
 
-      response.set_cookie('date',
+      response.set_cookie('interval',
         :expires => Time.now + 60 * 60 * 24 * 14,
         :path => "/",
         :value => { "from" => t_from, "until" => t_until }.to_json
