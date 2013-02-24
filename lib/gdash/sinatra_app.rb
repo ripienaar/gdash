@@ -144,7 +144,7 @@ class GDash
       options[:until] = t_until
 
       response.set_cookie('date',
-        :expires => Time.at(0),
+        :expires => Time.now + 60 * 60 * 24 * 14,
         :path => "/",
         :value => { "from" => t_from, "until" => t_until }.to_json
       )
