@@ -157,8 +157,8 @@ class GDash
 
       case params["splat"][0]
         when 'time'
-          t_from = params["splat"][1] || t_from || "-1hour"
-          t_until = params["splat"][2] || t_until || "now"
+          t_from = params["splat"][1] || "-1hour"
+          t_until = params["splat"][2] || "now"
         end
 
       options[:from] = t_from
