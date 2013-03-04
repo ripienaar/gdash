@@ -1,0 +1,18 @@
+title       "CPU Usage: Value for the most used CPU"
+vtitle      "percent"
+area        :stacked
+description "The combined CPU usage for node"
+hide_legend false
+
+field :iowait, :color => "red",
+               :alias => "IO Wait",
+               :data  => "maxSeries(node.cpu.*.wait)"
+
+field :system, :color => "orange",
+               :alias => "System",
+               :data  => "maxSeries(node.cpu.*.system)"
+
+field :user, :color => "yellow",
+             :alias => "User",
+             :data  => "maxSeries(node.cpu.*.user)"
+
