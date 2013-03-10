@@ -156,10 +156,12 @@ class GDash
       end
 
       case params["splat"][0]
-        when 'time'
-          t_from = params["splat"][1] || "-1hour"
-          t_until = params["splat"][2] || "now"
-        end
+      when 'time'
+        t_from = params["splat"][1] || "-1hour"
+        t_until = params["splat"][2] || "now"
+      when nil
+        redirect uri_to_interval({:from => t_from, :to => t_until}) if t_from 
+      end
 
       options[:from] = t_from
       options[:until] = t_until
@@ -169,15 +171,6 @@ class GDash
         :path => "/",
         :value => { "from" => t_from, "until" => t_until }.to_json
       )
-
-      if query_params[:print]
-        options[:include_properties] = "print.yml"
-        options[:graph_properties] = { 
-          :background_color => "white",
-          :foreground_color => "black"
-          }
-      end
-
 
       options.merge!(query_params)
 
@@ -204,12 +197,6 @@ class GDash
       include Rack::Utils
 
       alias_method :h, :escape_html
-
-      def link_to_interval(options)
-        qp=""; 
-      	params['p'].each {|k,v| qp+="?p[#{k}]=#{v}"} unless params['p'].nil?
-        "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to]), qp].join('/') }\">#{ h(options[:label]) }</a>"
-      end
 
       def query_params
         hash = {}
@@ -240,7 +227,17 @@ class GDash
         }.join('&')
       end
 
-      def link_to_print
+      def uri_to_interval(options)
+        uri = URI([@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/'))
+        uri.query = request.query_string unless request.query_string.empty? 
+        uri.to_s        
+      end
+
+      def link_to_interval(options)
+        "<a href=\"#{ uri_to_interval(options) }\">#{ h(options[:label]) }</a>"
+      end
+
+      def uri_to_print
         uri = URI.parse(request.path)
         new_query_ar = CGI.parse(request.query_string).merge! "print" => "1"
         uri.query = query_params_encode(new_query_ar)
