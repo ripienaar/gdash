@@ -35,10 +35,22 @@
                             </li>
                         <% end %>
                         </ul>
-                        <ul class="nav pull-right">
-                            <li><a href="<%= @graphite_base %>">Data Browser</a></li>
-                            <li><a href="<%= @prefix %>/docs/">Docs</a></li>
-                        </ul>
+  			            <ul class="nav secondary-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle">Menu</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<%= @graphite_base %>">Data Browser</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="<%= @prefix %>/docs/">GDash Docs</a></li>
+                                    <li><a href="http://graphite.readthedocs.org/en/1.0/functions.html">Graphite Function Reference</a></li>
+                                    <% if @dashboard %>
+                                        <li class="divider"></li>
+                                        <li><a href="<%= uri_to_print %>" target="_blank">Print this page</a></li>
+                                    <% end %> 
+                                </ul>
+                            </li>
+			            </ul>
+                    </div>
                 </div>
             </div>
         </div>

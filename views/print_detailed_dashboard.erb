@@ -1,4 +1,20 @@
-<% unless @error %>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
+    <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
+    <script language=Javascript>
+window.print();
+ClosePrint();
+function ClosePrint( )
+{
+setTimeout("window.close();",1000);
+}
+    </script>
+</head>
+<body bgcolor="white">
+<% if @error %>
+   <h2><%= @error %></h2>
+<% else %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <% span=12/@graph_columns %>
 <div class="row">
@@ -14,12 +30,7 @@
   <% end %>
 <% end %>
 </div>
-<script>
-    $(function () {
-      $(".graph img")
-        .popover({
-          placement: "bottom", delay: 1000
-        })
-    })
-</script>
 <% end %>
+</body>
+</html>
+

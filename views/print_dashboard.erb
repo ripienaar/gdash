@@ -1,11 +1,21 @@
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
     <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
+    <script language=Javascript>
+window.print();
+ClosePrint();
+function ClosePrint( )
+{
+setTimeout("window.close();",1000);
+}
+    </script>
 </head>
 <% if @error %>
    <h2><%= @error %></h2>
 <% else %>
-<body bgcolor="black">
+<body bgcolor="white">
+<h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <% span=12/@graph_columns %>
 <div class="row">
 <% @graphs.each_with_index do |graph,i| %>
@@ -14,8 +24,8 @@
        </div>
        <div class="row">
     <%end%>
-        <div align=center class="span<%=span%>" >
-        <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
+        <div class="span<%=span%>" >
+        <%= erb(:graph, :locals => { :graph => graph}) %>
         </div>
   <% end %>
 <% end %>
