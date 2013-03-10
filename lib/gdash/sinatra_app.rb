@@ -156,10 +156,12 @@ class GDash
       end
 
       case params["splat"][0]
-        when 'time'
-          t_from = params["splat"][1] || "-1hour"
-          t_until = params["splat"][2] || "now"
-        end
+      when 'time'
+        t_from = params["splat"][1] || "-1hour"
+        t_until = params["splat"][2] || "now"
+      when nil
+        redirect uri_to_interval({:from => t_from, :to => t_until}) if t_from 
+      end
 
       options[:from] = t_from
       options[:until] = t_until
