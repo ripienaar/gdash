@@ -204,12 +204,6 @@ class GDash
 
       alias_method :h, :escape_html
 
-      def link_to_interval(options)
-        qp=""; 
-      	params['p'].each {|k,v| qp+="?p[#{k}]=#{v}"} unless params['p'].nil?
-        "<a href=\"#{ [@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to]), qp].join('/') }\">#{ h(options[:label]) }</a>"
-      end
-
       def query_params
         hash = {}
         protected_keys = [:category, :dash, :splat, :details, :name]
@@ -239,7 +233,17 @@ class GDash
         }.join('&')
       end
 
-      def link_to_print
+      def uri_to_interval(options)
+        uri = URI([@prefix, params[:category], params[:dash], 'time', h(options[:from]), h(options[:to])].join('/'))
+        uri.query = request.query_string unless request.query_string.empty? 
+        uri.to_s        
+      end
+
+      def link_to_interval(options)
+        "<a href=\"#{ uri_to_interval(options) }\">#{ h(options[:label]) }</a>"
+      end
+
+      def uri_to_print
         uri = URI.parse(request.path)
         new_query_ar = CGI.parse(request.query_string).merge! "print" => "1"
         uri.query = query_params_encode(new_query_ar)
