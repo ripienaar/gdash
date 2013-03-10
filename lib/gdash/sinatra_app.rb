@@ -130,11 +130,15 @@ class GDash
         options[:height] = @graph_height
       end
 
+      options[:from] = params[:from] if params[:from]
+      options[:until] = params[:until] if params[:until]
+
       if @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}"
       end
+      options.merge!(query_params)
 
       @graphs = @dashboard.graphs(options)
 

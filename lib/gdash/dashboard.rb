@@ -92,6 +92,7 @@ class GDash
 
       overrides = options.reject { |k,v| v.nil? }
       overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
+      overrides = overrides.merge!(options[:placeholders]) if options[:placeholders]
 
       graphs = list_graphs
 
@@ -120,6 +121,7 @@ class GDash
 
       overrides = options.reject { |k,v| v.nil? }
       overrides = overrides.merge!(@properties[:graph_properties]) if @properties[:graph_properties]
+      overrides = overrides.merge!(options[:placeholders]) if options[:placeholders]
 
       graphs = list_graphs
 
