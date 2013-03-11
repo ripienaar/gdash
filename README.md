@@ -292,7 +292,7 @@ _properties[:extra_property] = value_.
 
 Use 'filename' for the graph file name. Default is sort by filename. e.g: 
 
-  :sort_dashboards_by: [ weight, filename ]   
+  :sort_graphs_by: [ weight, filename ]   
 
 
 Contact?
