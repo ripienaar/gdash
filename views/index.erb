@@ -7,7 +7,7 @@
         <th width="70%">Description</th>
     </thead>
     <tbody>
-        <% @top_level[key].dashboards.sort_by{|b| b[:name].to_s}.each do |board| %>
+        <% @top_level[key].dashboards.each do |board| %>
         <tr>
             <td><a href="<%= [@prefix, key, board[:link]].join('/') %>/"><%= board[:name] %></a></td><td><%= board[:description] %></td>
         </tr>

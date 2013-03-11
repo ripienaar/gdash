@@ -20,7 +20,7 @@
                           <li class="dropdown" id="menu-<%= category %>">
                                 <a href="#" data-toggle="dropdown" href="#menu-<%= category %>" class="dropdown-toggle"><%= category.capitalize %> <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                <% @top_level[category].dashboards.sort_by{|b| b[:name].to_s}.each do |board| %>
+                                <% @top_level[category].dashboards.each do |board| %>
                                     <li><a href="<%= [@prefix, category, board[:link]].join('/') %>/"><%= board[:name] %></a></li>
                                 <% end %>
                                 </ul>

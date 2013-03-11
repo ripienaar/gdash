@@ -7,7 +7,8 @@ class GDash
       @properties = {:graph_width => nil,
                      :graph_height => nil,
                      :graph_from => nil,
-                     :graph_until => nil}
+                     :graph_until => nil, 
+                     :sort_graphs_by => [:file] }
 
       @properties[:short_name] = short_name
       @properties[:graph_templates] = graph_templates
@@ -95,10 +96,21 @@ class GDash
 
       graphs = list_graphs
 
-      graphs.keys.sort.map do |graph_name|
-        {:name => graph_name, 
-          :graphite => GraphiteGraph.new(graphs[graph_name], overrides)}
+      graph_instances = graphs.keys.map do |graph_name|
+        { :name => graph_name, 
+          :graphite => GraphiteGraph.new(graphs[graph_name], overrides) }
       end
+      
+      graph_instances.sort_by{|g| 
+        sort_graphs_by.map {|field|
+          if field.to_sym == :filename
+            g[:name].to_s
+          else
+            g[:graphite].properties[field.to_sym].to_s
+          end
+      }
+    }
+
     end
 
     def graph_by_name(name, options={})

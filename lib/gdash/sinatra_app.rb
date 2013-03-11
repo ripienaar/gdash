@@ -38,12 +38,15 @@ class GDash
 
       @intervals = options.delete(:intervals) || []
 
+      @sort_dashboards_by = options.delete(:sort_dashboards_by) || [ :name ]
+      @sort_dashboards_by = [@sort_dashboards_by] unless @sort_dashboards_by.is_a? Array
+
       @top_level = Hash.new
       Dir.entries(@graph_templates).each do |category|
         if File.directory?("#{@graph_templates}/#{category}")
           
           unless ("#{category}" =~ /^\./ )
-            gdash = GDash.new(@graphite_base, "/render/", @graph_templates, category, {:width => @graph_width, :height => @graph_height})
+            gdash = GDash.new(@graphite_base, "/render/", @graph_templates, category, {:sort_dashboards_by => @sort_dashboards_by, :width => @graph_width, :height => @graph_height})
             @top_level["#{category}"] = gdash unless gdash.dashboards.empty?
           end
         end
