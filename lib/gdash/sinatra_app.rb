@@ -117,7 +117,7 @@ class GDash
       options = {}
       params["splat"] = params["splat"].first.split("/")
 
-      params["columns"] = params["splat"][0].to_i || @graph_columns
+      @graph_columns = params["splat"][0].to_i unless params["splat"][0].nil?
 
       if params["splat"].size == 3
         options[:width] = params["splat"][1].to_i
