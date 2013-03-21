@@ -1,0 +1,17 @@
+title       "Load"
+area        :none
+description "The combined CPU usage for node"
+hide_legend false
+
+field :short, :color => "red",
+               :alias => "Short term (1 minute)",
+               :data  => "node.load.shortterm"
+
+field :mid, :color => "orange",
+               :alias => "Mid term (5 minutes)",
+               :data  => "node.load.midterm"
+
+field :long, :color => "yellow",
+             :alias => "Long term (15 minutes)",
+             :data  => "node.load.longterm"
+

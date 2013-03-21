@@ -1,0 +1,12 @@
+title   "Traffic on eth1"
+area    :first
+hide_legend false
+
+field :receiving, :color => "green",
+               :alias => "Receiving",
+               :data  => "node.interface.packets.eth1.rx"
+
+field :transmitting, :color => "blue",
+               :alias => "Transmiting",
+               :data  => "node.interface.packets.eth1.tx"
+
