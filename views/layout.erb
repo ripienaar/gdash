@@ -11,6 +11,7 @@
         <script src="<%= @prefix %>/js/jquery-ui-sliderAccess.js"></script>
         <script src="<%= @prefix %>/js/jquery.cookie.js"></script>
         <script src="<%= @prefix %>/js/selectdate.js"></script>
+        <script src="<%= @prefix %>/js/jstz-1.0.4.min.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-twipsy.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-scrollspy.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-dropdown.js"></script>
@@ -83,11 +84,15 @@
                 var now = new Date();
                 $('#updated').text('Updated ' + now.toLocaleString())
                 setInterval(reloadDash, <%= @refresh_rate * 1000 %>);
+                reloadDash();
             });
             function reloadDash() {
                 var now = new Date();
                 $('img').each(function(index) {
-                    var url = $(this).attr('src').replace(/&\d+$/, '');
+                    var url = $(this).attr('src').replace(/&\d+$/,'');
+                    if(!url.match(/&tz=/)) {
+                       url += "&tz=" + jstz.determine().name();
+                    }
                     $(this).attr('src', url + '&' + now.getTime());
                 });
                 $('#updated').text('Updated ' + now.toLocaleString())
