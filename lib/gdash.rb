@@ -48,7 +48,7 @@ class GDash
       begin
         yaml_file = File.join(dash_templates, dash, "dash.yaml")
         if File.exist?(yaml_file)
-          dashboards << YAML.load_file(yaml_file).merge({:link => dash})
+          dashboards << YAML.load_file(yaml_file).merge({:category => category, :link => dash})
         end
       rescue Exception => e
         p e
