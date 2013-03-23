@@ -41,7 +41,6 @@ class GDash
       @top_level = Hash.new
       Dir.entries(@graph_templates).each do |category|
         if File.directory?("#{@graph_templates}/#{category}")
-          
           unless ("#{category}" =~ /^\./ )
             gdash = GDash.new(@graphite_base, "/render/", @graph_templates, category, {:width => @graph_width, :height => @graph_height})
             @top_level["#{category}"] = gdash unless gdash.dashboards.empty?
@@ -50,6 +49,16 @@ class GDash
       end
 
       super()
+    end
+
+    before do
+
+      # To build a list for Typeahead Search
+      @search_elements = []
+      @top_level.keys.each do |dash|
+        @top_level[dash].dashboards.each { |d| @search_elements << "#{d[:category]}/#{d[:name]}"}
+      end
+
     end
 
     set :static, true
@@ -65,7 +74,46 @@ class GDash
         @error = "No dashboards found in the templates directory"
       end
 
+      mapper = []
+      @top_level.keys.each do |k|
+        @top_level[k].dashboards.each do |d|
+          mapper << d #"#{k}/#{d[:name]}"
+        end
+      end
+
+      @dashboard_to_display = mapper.group_by {|d| d[:category]} 
+
       erb :index
+    end
+
+    get '/search?*' do
+      search_string = params['dashboard'] || '' 
+      d1,d2 = search_string.split('/', 2)
+      if d2
+        category, dashboard = d1, d2
+      else
+        category, dashboard = nil, d1
+      end
+      
+      mapper = []
+      @top_level.keys.each do |k|
+        @top_level[k].dashboards.each do |d|
+          mapper << d #"#{k}/#{d[:name]}"
+        end
+      end
+  
+      result = mapper.select {|d| d[:name] == dashboard && (category == nil || d[:category] == category )}
+
+      if result.count == 1
+        redirect "#{result[0][:category]}/#{result[0][:link]}"
+      elsif result.count == 0 then
+        @error = "No dashboards found in the templates directory, Search = <b>'#{search_string}'</b>"
+        @dashboard_to_display = mapper.group_by {|d| d[:category]} 
+        erb :index 
+      else 
+        @dashboard_to_display = result.group_by {|d| d[:category]} 
+        erb :index 
+      end
     end
 
     Less.paths << File.join(settings.views, 'bootstrap')

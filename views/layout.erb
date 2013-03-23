@@ -8,6 +8,7 @@
         <script src="<%= @prefix %>/js/bootstrap-dropdown.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-tooltip.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-popover.js"></script>
+        <script src="<%= @prefix %>/js/bootstrap-typeahead.js"></script>
         <title><%= @dash_title %></title>
     </head>
     <body>
@@ -42,6 +43,14 @@
                                 </ul>
                             </li>
 			            </ul>
+                  <div class="pull-right" style="" class='nav input-append'>
+                      <form id="form-search" name="dashboards" style="margin: 0;" class="form-search" method="get" action="/search">
+                      <div class="input-append">
+                      <input class="span2 search-query" name="dashboard" type="text" placeholder="Dashboard..." data-provide="typeahead" data-items="10" data-source='<%= @search_elements.to_s %>' autocomplete="off" />
+                      <button class="btn btn-primary" style="margin-left: -5px; padding-bottom: 5px;" type="submit" value"submit" /><i class="icon-search icon-white"></i></button>
+                      </div>
+                      </form>
+                  </div>
                     </div>
                 </div>
             </div>
@@ -49,8 +58,10 @@
 
         <div class="container">
                 <% if @error %>
-                <div class="alert-message error">
-                    <%= @error %>
+                <div class="alert alert-error alert-block">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <h4>Error!</h4>
+                  <%= @error %>
                 </div>
                 <% end %>
                 <%= yield %>
