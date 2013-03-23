@@ -1,0 +1,6 @@
+title   "User connected"
+area    :all
+hide_legend false
+
+field :users,   :alias => "Users",
+                  :data  => "node.users.users.users"

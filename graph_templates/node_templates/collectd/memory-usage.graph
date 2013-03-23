@@ -1,0 +1,25 @@
+title       "RAM Usage (in percent)"
+area        :stacked
+description "RAM usage (in percent)"
+hide_legend false
+
+field :use,    :color => "red",
+               :alias => "used by application",
+               :data  => "asPercent(diffSeries(node.memory.used,node.memory.cached,node.memory.buffered),sumSeries(node.memory.used, node.memory.free))"
+/
+
+field :buffer, :color => "orange",
+               :alias => "buffer",
+               :data  => "asPercent(node.memory.buffered,sumSeries(node.memory.used, node.memory.free))"
+/
+
+field :cache,  :color => "yellow",
+               :alias => "cache",
+               :data  => "asPercent(node.memory.cached,sumSeries(node.memory.used, node.memory.free)"
+/
+
+field :free,   :color => "green",
+               :alias => "free",
+               :data  => "asPercent(node.memory.free,sumSeries(node.memory.used, node.memory.free))"
+/
+

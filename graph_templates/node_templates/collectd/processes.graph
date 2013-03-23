@@ -1,0 +1,30 @@
+title       "Processes"
+vtitle      "Number of processes"
+area        :stacked
+description "Number of processes for node"
+hide_legend false
+
+field :paging, :color => "purple",
+             :alias => "paging",
+             :data  => "node.processes.ps_state.paging"
+
+field :zombie,  :color => "white",
+             :alias => "zombies",
+             :data  => "node.processes.ps_state.zombie"
+
+field :uninterruptible,  :color => "orange",
+             :alias => "uninteruptible",
+             :data  => "node.processes.ps_state.blocked"
+
+field :dead,  :color => "red",
+             :alias => "dead",
+             :data  => "node.processes.ps_state.stopped"
+
+field :sleeping,  :color => "blue",
+             :alias => "sleeping",
+             :data  => "node.processes.ps_state.sleeping"
+
+field :runnable,  :color => "green",
+             :alias => "runnable",
+             :data  => "node.processes.ps_state.running"
+

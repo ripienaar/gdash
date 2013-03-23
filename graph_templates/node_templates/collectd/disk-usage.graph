@@ -1,0 +1,26 @@
+title       "Disk Usage (in percent)"
+area        :none
+description "Disk usage (in percent)"
+hide_legend false
+linewidth 3
+
+field :opt, :color => "red",
+               :alias => "/opt",
+               :data  => "asPercent(node.df.opt.used,sumSeries(node.df.opt.used, l52eatsrv-cs1.df.opt.free))"
+
+field :var, :color => "orange",
+               :alias => "/var",
+               :data  => "asPercent(node.df.var.used,sumSeries(node.df.var.used, l52eatsrv-cs1.df.var.free))"
+
+field :tmp, :color => "yellow",
+             :alias => "/tmp",
+             :data  => "asPercent(node.df.tmp.used,sumSeries(node.df.tmp.used, l52eatsrv-cs1.df.tmp.free))"
+
+field :home, :color => "blue",
+               :alias => "/home",
+               :data  => "asPercent(node.df.home.used,sumSeries(node.df.home.used, l52eatsrv-cs1.df.home.free))"
+
+field :root, :color => "green",
+             :alias => "/root",
+             :data  => "asPercent(node.df.root.used,sumSeries(node.df.root.used, l52eatsrv-cs1.df.root.free))"
+
