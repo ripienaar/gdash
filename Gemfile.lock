@@ -2,7 +2,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     commonjs (0.2.6)
-    graphite_graph (0.0.7)
+    graphite_graph (0.0.8)
     jruby-jars (1.7.2)
     jruby-rack (1.1.13.1)
     less (2.2.1)
@@ -33,7 +33,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  graphite_graph (~> 0.0.7)
+  graphite_graph (~> 0.0.8)
   less
   sinatra
   therubyracer
