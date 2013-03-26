@@ -1,0 +1,47 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
+    <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
+    <script language=Javascript>
+window.print();
+ClosePrint();
+function ClosePrint( )
+{
+setTimeout("window.close();",1000);
+}
+    </script>
+</head>
+<% if @error %>
+   <h2><%= @error %></h2>
+<% else %>
+<body bgcolor="white">
+<h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+<% span=12/@graph_columns %>
+<ul class="thumbnails">
+<% @graphs.each_with_index do |graph,i| %>
+  <% if graph %>
+    <% if i>0 and i%@graph_columns==0 %>
+       </ul>
+       <ul class="thumbnails">
+    <%end%>
+        <li class="span<%=span%>" >
+        <%= erb(:graph, :locals => { :graph => graph}) %>
+        </li>
+  <% end %>
+<% end %>
+</ul>
+<script>
+    $(document).ready(function() {
+        setInterval(reloadDash, <%= @refresh_rate * 1000 %>);
+    });
+    function reloadDash() {
+        var now = new Date();
+        $('img').each(function(index) {
+            var url = $(this).attr('src').replace(/&\d+$/, '');
+            $(this).attr('src', url + '&' + now.getTime());
+        });
+    }
+</script>
+</body>
+<% end %>
+</html>

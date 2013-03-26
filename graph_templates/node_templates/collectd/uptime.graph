@@ -1,0 +1,6 @@
+title   "Uptime"
+area    :all
+hide_legend false
+
+field :uptime,   :alias => "Uptime",
+                  :data  => "scale(node.uptime,0.000011574)"

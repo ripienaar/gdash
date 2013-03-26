@@ -2,12 +2,21 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="<%= @prefix %>/bootstrap/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="<%= @prefix %>/js/jquery-ui-timepicker-addon.css">
         <script src="<%= @prefix %>/js/jquery-1.7.2.min.js"></script>
+        <script src="<%= @prefix %>/js/jquery-ui-1.10.0.custom.min.js"></script>
+        <script src="<%= @prefix %>/js/jquery-ui-timepicker-addon.js"></script>
+        <script src="<%= @prefix %>/js/jquery-ui-sliderAccess.js"></script>
+        <script src="<%= @prefix %>/js/jquery.cookie.js"></script>
+        <script src="<%= @prefix %>/js/selectdate.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-twipsy.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-scrollspy.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-dropdown.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-tooltip.js"></script>
         <script src="<%= @prefix %>/js/bootstrap-popover.js"></script>
+        <script src="<%= @prefix %>/js/bootstrap-typeahead.js"></script>
         <title><%= @dash_title %></title>
     </head>
     <body>
@@ -27,18 +36,40 @@
                             </li>
                         <% end %>
                         </ul>
-                        <ul class="nav pull-right">
-                            <li><a href="<%= @graphite_base %>">Data Browser</a></li>
-                            <li><a href="<%= @prefix %>/docs/">Docs</a></li>
-                        </ul>
+  			            <ul class="nav secondary-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle">Menu</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<%= @graphite_base %>">Data Browser</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="<%= @prefix %>/docs/">GDash Docs</a></li>
+                                    <li><a href="http://graphite.readthedocs.org/en/1.0/functions.html">Graphite Function Reference</a></li>
+                                    <% if @dashboard %>
+                                        <li class="divider"></li>
+                                        <li><a href="<%= uri_to_print %>" target="_blank">Print this page</a></li>
+                                    <% end %> 
+                                </ul>
+                            </li>
+			            </ul>
+                  <div class="pull-right" style="" class='nav input-append'>
+                      <form id="form-search" name="dashboards" style="margin: 0;" class="form-search" method="get" action="/search">
+                      <div class="input-append">
+                      <input class="span2 search-query" name="dashboard" type="text" placeholder="Dashboard..." data-provide="typeahead" data-items="10" data-source='<%= @search_elements.to_s %>' autocomplete="off" />
+                      <button class="btn btn-primary" style="margin-left: -5px; padding-bottom: 5px;" type="submit" value"submit" /><i class="icon-search icon-white"></i></button>
+                      </div>
+                      </form>
+                  </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="container">
                 <% if @error %>
-                <div class="alert-message error">
-                    <%= @error %>
+                <div class="alert alert-error alert-block">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <h4>Error!</h4>
+                  <%= @error %>
                 </div>
                 <% end %>
                 <%= yield %>

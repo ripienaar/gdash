@@ -1,0 +1,12 @@
+title   "Errors on eth0"
+area    :first
+hide_legend false
+
+field :receiving, :color => "green",
+               :alias => "Receiving",
+               :data  => "node.interface.errors.eth0.rx"
+
+field :transmitting, :color => "blue",
+               :alias => "Transmiting",
+               :data  => "node.interface.errors.eth0.tx"
+
