@@ -106,7 +106,7 @@ class GDash
       result = mapper.select {|d| d[:name] == dashboard && (category == nil || d[:category] == category )}
 
       if result.count == 1
-        redirect "#{result[0][:category]}/#{result[0][:link]}"
+        redirect "#{@prefix}/#{result[0][:category]}/#{result[0][:link]}"
       elsif result.count == 0 then
         @error = "No dashboards found in the templates directory, Search = <b>'#{search_string}'</b>"
         @dashboard_to_display = mapper.group_by {|d| d[:category]} 
