@@ -50,8 +50,10 @@ or
 `warble executable war  `
 if you want to include a webserver (default: jetty, edit /config/warbl.rb to switch to winstone or jenkins webserver).  
 
-Run:	
-`	java -Dconfig=<absolutepath>/gdash.yaml -jar gdash.war [--httpPort=5601]`
+Run (example for jetty):	
+`	java -Djetty.port=8080 -Dconfig=<absolutepath>/gdash.yaml -jar gdash.war`
+
+
 
 Config?
 -------
