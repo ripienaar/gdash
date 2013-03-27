@@ -31,7 +31,6 @@ This is still experimental!
 - I experienced crashes of the packaged jetty during my tests
 
 ###Todo:
-- Have the gdash.yaml outside of the WAR file
 - Replace redcarpet with a different renderer or make it work with JRuby/warble
 - Do proper testing on different platforms
 - Speed up startup time, performance in general
@@ -52,9 +51,7 @@ or
 if you want to include a webserver (default: jetty, edit /config/warbl.rb to switch to winstone or jenkins webserver).  
 
 Run:	
-`	java -jar gdash.war [--httpPort=5601]`
-
-Todo: Externalize the configuration (gdash.yaml). Any help would be appreciated.  
+`	java -Dconfig=<absolutepath>/gdash.yaml -jar gdash.war [--httpPort=5601]`
 
 Config?
 -------
