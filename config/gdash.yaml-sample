@@ -9,7 +9,6 @@
   :graph_columns: 2
   :graph_width: 500
   :graph_height: 250
-  :whisper_dir: "/var/lib/carbon/whisper"
   :interval_filters:
     - :label: Last Hour
       :from: -1hour
