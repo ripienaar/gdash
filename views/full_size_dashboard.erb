@@ -9,20 +9,21 @@
 <body style='background: black'>
 <div class="container">
   <% span=12/@graph_columns %>
-<ul class="thumbnails">
+<table>
+<tr>
   <% @graphs.each_with_index do |graph,i| %>
     <% if graph %>
       <% if i>0 and i%@graph_columns==0 %>
-         </ul>
-         <ul class="thumbnails">
+         </tr>
+         <tr>
       <%end%>
-          <div class="span<%=span%>" >
+          <td>
           <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
-          </div>
+          </td>
     <% end %>
   <% end %>
-  </div>
-</ul>
+</tr>
+</table>
 <script>
     $(document).ready(function() {
         setInterval(reloadDash, <%= @refresh_rate * 1000 %>);
