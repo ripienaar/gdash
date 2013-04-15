@@ -17,19 +17,21 @@ setTimeout("window.close();",1000);
 <% else %>
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <% span=12/@graph_columns %>
-<ul class="thumbnails">
+<table>
+<tr>
 <% @graphs.each_with_index do |graph,i| %>
   <% if graph %>
     <% if i>0 and i%@graph_columns==0 %>
-       </ul>
-       <ul class="thumbnails">
+       </tr>
+       <tr>
     <%end%>
-        <li class="span<%=span%>" >
+        <td>
           <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
-        </li>
+        </td>
   <% end %>
 <% end %>
-</ul>
+</tr>
+</table>
 <% end %>
 </body>
 </html>
