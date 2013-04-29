@@ -1,10 +1,6 @@
 <% unless @error %>
 <div class="row-fluid">
-  <div class="span2">
-  </div>
-  <div class="span6">
-<h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
-  </div>
+  <%= erb :_dash_header %>
 </div>
   
 <% span=12/@graph_columns %>
