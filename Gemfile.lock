@@ -3,10 +3,11 @@ GEM
   specs:
     commonjs (0.2.6)
     graphite_graph (0.0.8)
+    json (1.7.7)
     less (2.2.1)
       commonjs (~> 0.2.6)
     libv8 (3.3.10.4)
-    rack (1.4.1)
+    rack (1.4.5)
     rack-protection (1.2.0)
       rack
     redcarpet (2.1.1)
@@ -23,6 +24,7 @@ PLATFORMS
 
 DEPENDENCIES
   graphite_graph (~> 0.0.8)
+  json
   less
   redcarpet
   sinatra

@@ -1,21 +1,41 @@
 <% unless @error %>
-<h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+
+<div class="row-fluid">
+  <div class="span2">
+  </div>
+  <div class="span6">
+   <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+  </div>
+  <div class="span4">
+    <small>Source: <a class="muted" href="<%=@dashboard.graphite_render.sub("/render","")%>"><%=@dashboard.graphite_render.sub("/render","")%></a></small>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span2">
+  </div>
+  <div class="span8">
 <%= erb :_interval_filter, :layout => false unless @interval_filters.empty? %>
-<div class="row" style="text-align: right"><small>Source: <a class="muted" href="<%=@dashboard.graphite_render.sub("/render","")%>"><%=@dashboard.graphite_render.sub("/render","")%></a></small></h2></div>
+  </div>
+  <div class="span2">
+  </div>
+</div>
+<table align=center>
+<tr>
 <% span=12/@graph_columns %>
-<div class="row">
 <% @graphs.each_with_index do |graph,i| %>
   <% if graph %>
     <% if i>0 and i%@graph_columns==0 %>
-       </div>
-       <div class="row">
+      </tr>
+<tr>
     <%end%>
-        <div class="span<%=span%>" >
+<td>
         <%= erb(:graph, :locals => { :graph => graph }) %>
-        </div>
+</td>
   <% end %>
 <% end %>
-</div>
+</tr>
+</table>
+
 <script>
     $(function () {
       $(".graph img")

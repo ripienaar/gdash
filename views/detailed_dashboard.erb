@@ -1,19 +1,28 @@
 <% unless @error %>
+<div class="row-fluid">
+  <div class="span2">
+  </div>
+  <div class="span6">
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
+  </div>
+</div>
+  
 <% span=12/@graph_columns %>
-<div class="row">
+<table align=center>
+<tr>
 <% @graphs.each_with_index do |graph,i| %>
   <% if graph %>
     <% if i>0 and i%@graph_columns==0 %>
-       </div>
-       <div class="row">
+       </tr>
+       <tr>
     <%end%>
-        <div class="span<%=span%>" >
+        <td>
           <%= erb(:graph, :locals => { :graph => graph, :omit_link => true }) %>
-        </div>
+        </td>
   <% end %>
 <% end %>
-</div>
+</tr>
+</table>
 <script>
     $(function () {
       $(".graph img")

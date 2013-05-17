@@ -17,19 +17,21 @@ setTimeout("window.close();",1000);
 <body bgcolor="white">
 <h1><%= @dashboard.name %>&nbsp;<small><%= @dashboard.description %></small></h1>
 <% span=12/@graph_columns %>
-<div class="row">
+<table>
+<tr>
 <% @graphs.each_with_index do |graph,i| %>
   <% if graph %>
     <% if i>0 and i%@graph_columns==0 %>
-       </div>
-       <div class="row">
+       </tr>
+       <tr>
     <%end%>
-        <div class="span<%=span%>" >
+        <td>
         <%= erb(:graph, :locals => { :graph => graph}) %>
-        </div>
+        </td>
   <% end %>
 <% end %>
-</div>
+</tr>
+</table>
 <script>
     $(document).ready(function() {
         setInterval(reloadDash, <%= @refresh_rate * 1000 %>);

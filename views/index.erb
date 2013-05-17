@@ -1,5 +1,5 @@
 <% unless @error %>
-<%   @top_level.keys.sort.each do |key| %>
+<%  @dashboard_to_display.keys.sort.each do |key| %>
 <h2> <%= key.capitalize %> </h2>
 <table class="table">
     <thead>
@@ -7,7 +7,7 @@
         <th width="70%">Description</th>
     </thead>
     <tbody>
-        <% @top_level[key].dashboards.sort_by{|b| b[:name].to_s}.each do |board| %>
+        <% @dashboard_to_display[key].sort_by{|b| b[:name].to_s}.each do |board| %>
         <tr>
             <td><a href="<%= [@prefix, key, board[:link]].join('/') %>/"><%= board[:name] %></a></td><td><%= board[:description] %></td>
         </tr>
