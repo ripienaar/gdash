@@ -36,7 +36,10 @@ function getURLParameter(name) {
 
 function setDestinationDate(srcDateBox, destDateBox, dateText)
 {
-  if (destDateBox.val() == destDateBox.prop("defaultValue"))
+  if(isNaN(Date.parse(dateText.replace(/-/g,'/'))))
+    return;
+
+  if (destDateBox.val() == 'from' || destDateBox.val() == 'until')
     destDateBox.val(dateText);
   else {
     var startDate = $('#dt_from').datetimepicker('getDate');
