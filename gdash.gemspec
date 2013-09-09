@@ -7,13 +7,15 @@ spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = 'Graphite Dashboard'
   s.description = "A simple dashboard for creating and displaying Graphite graphs"
-# Add your other files here if you make them
-  s.files = FileList["{README.md,COPYING,CONTRIBUTORS,bin,lib,public,views,sample,Gemfile,Gemfile.lock}/**/*"].to_a
+  s.files = `git ls-files`.split("\n")
   s.require_paths << 'lib'
   s.has_rdoc = false
   s.add_development_dependency('rake')
   s.add_development_dependency('rdoc')
-  s.add_dependency 'graphite_graph'
+  s.add_dependency 'graphite_graph', "~>0.0.8"
   s.add_dependency 'sinatra'
   s.add_dependency 'redcarpet'
+  s.add_dependency 'less'
+  s.add_dependency 'therubyracer'
+  s.add_dependency 'json'
 end
