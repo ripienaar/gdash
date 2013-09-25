@@ -222,7 +222,7 @@ class GDash
 
       options.merge!(query_params)
 
-      if @top_level["#{params[:category]}"].list.include?(params[:dash])
+      if @top_level["#{params[:category]}"] || @top_level["#{params[:category]}"].list.include?(params[:dash])
         @dashboard = @top_level[@params[:category]].dashboard(params[:dash], options)
       else
         @error = "No dashboard called #{params[:dash]} found in #{params[:category]}/#{@top_level[params[:category]].list.join ','}."
