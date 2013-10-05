@@ -54,7 +54,7 @@
                   <div class="pull-right" style="" class='nav input-append'>
                       <form id="form-search" name="dashboards" style="margin: 0;" class="form-search" method="get" action="<%= @prefix %>/search">
                       <div class="input-append">
-                      <input class="span2 search-query" name="dashboard" type="text" placeholder="Dashboard..." data-provide="typeahead" data-items="10" data-source='<%= @search_elements.to_s %>' autocomplete="off" />
+                      <input class="span2 search-query" name="dashboard" type="text" placeholder="Dashboard..." data-provide="typeahead" data-items="10" data-source='<%= @search_elements.inspect %>' autocomplete="off" />
                       <button class="btn btn-primary" style="margin-left: -5px; padding-bottom: 5px;" type="submit" value"submit" /><i class="icon-search icon-white"></i></button>
                       </div>
                       </form>
