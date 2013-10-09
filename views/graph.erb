@@ -2,8 +2,8 @@
 <% unless omit_link %>
   <%qp="?#{request.env['rack.request.query_string']}" %>
   <a href='<%= [@prefix, params[:category], @params[:dash], 'details', graph[:name], qp].join "/" %>'>
+<% else %>
+  <a href='<%= [@dashboard.graphite_render.gsub("render", "composer"), graph[:graphite][:url]].join "?" %>'>
 <% end %>
 <img style="margin: 0 auto;" src='<%= [@dashboard.graphite_render, graph[:graphite][:url]].join "?" %>' title="<%= graph[:graphite][:title] %>" data-content="<%= graph[:graphite][:description] %>">
-<% unless omit_link %>
   </a>
-<% end %>
