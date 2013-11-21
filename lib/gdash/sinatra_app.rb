@@ -87,6 +87,24 @@ class GDash
       erb :index
     end
 
+    get '/monitoring_export' do
+      content_type :json
+      return_data = []
+      @top_level.keys.each do |category|
+        @top_level[category].dashboards.each do |dashboard_name|
+          Dashboard.new(dashboard_name[:link], @graph_templates, dashboard_name[:category], {}, @graphite_render).graphs.each do |graph|
+            graph_object = graph[:graphite]
+            if graph[:graphite].warning_threshold.any? and graph[:graphite].critical_threshold.any?
+              return_data << {
+                :graphite_url => [@graphite_render, "?", graph[:graphite].url].join,
+                :graph_properties => graph[:graphite].properties
+              }
+            end
+          end
+        end
+      end
+      return_data.to_json
+    end
     get '/search?*' do
       search_string = params['dashboard'] || '' 
       d1,d2 = search_string.split('/', 2)
