@@ -107,6 +107,7 @@ class GDash
       end
       return_data.to_json
     end
+
     get '/search?*' do
       search_string = params['dashboard'] || '' 
       d1,d2 = search_string.split('/', 2)
