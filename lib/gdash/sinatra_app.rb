@@ -34,6 +34,9 @@ class GDash
       # Dashboard title
       @dash_title = options.delete(:title) || "Graphite Dashboard"
 
+      # Display the source of the data, only if explicitly set
+      @source_displayed = options.delete(:source_displayed) ? true : false
+
       # Time filters in interface
       @interval_filters = options.delete(:interval_filters) || Array.new
 
@@ -252,7 +255,7 @@ class GDash
       @graphs = @dashboard.graphs(options)
 
       if !query_params[:print]
-        erb :dashboard
+        erb :dashboard, :locals => {:source_displayed => @source_displayed}
       else
         erb :print_dashboard, :layout => false
       end
