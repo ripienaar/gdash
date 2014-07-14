@@ -57,11 +57,12 @@ function formatSelectedDate(date) {
 function selectDt() {
   dt_from = $('#dt_from').datetimepicker('getDate');
   dt_to = $('#dt_to').datetimepicker('getDate');
-  window.location = buildGraphiteDateUrl(dt_from, dt_to);
+  var queryString = location.search;
+  window.location = buildGraphiteDateUrl(dt_from, dt_to, queryString);
   return true;
 }
 
-function buildGraphiteDateUrl(dt_from, dt_to)
+function buildGraphiteDateUrl(dt_from, dt_to, queryString)
 {
   from = buildGraphiteDateString(dt_from);
   to = buildGraphiteDateString(dt_to);
@@ -71,7 +72,11 @@ function buildGraphiteDateUrl(dt_from, dt_to)
   if (newurl.match(regex)) {
     newurl = newurl.replace(regex,"");
   }
-  return newurl + params;
+  if (queryString) {
+    return newurl + params + "/" + queryString;
+  } else {
+    return newurl + params;
+  }
 }
 
 function buildGraphiteDateString(date)
