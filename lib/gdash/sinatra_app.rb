@@ -124,7 +124,7 @@ class GDash
         end
       end
   
-      result = mapper.select {|d| d[:name] == dashboard && (category == nil || d[:category] == category )}
+      result = mapper.select {|d| d[:name].include?(dashboard) && (category == nil || d[:category] == category )}
 
       if result.count == 1
         redirect "#{@prefix}/#{result[0][:category]}/#{result[0][:link]}"
